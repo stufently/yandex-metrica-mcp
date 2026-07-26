@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Security
+- CI: third-party actions in `.github/workflows/docker.yml` pinned by commit SHA
+  (`docker/setup-buildx-action@8d2750c6` v3.12.0, `docker/login-action@c94ce9fb`
+  v3.7.0, `docker/metadata-action@c299e40c` v5.10.0,
+  `docker/build-push-action@53b7df96` v7.3.0). `vN` tags are mutable and the job
+  carries a GHCR push token. SHAs equal what the tags resolved to on 2026-07-25 —
+  build behaviour unchanged. First-party `actions/*` left on `vN`.
+
 ### Added
 - `yandex_metrica_create_counter` tool — create new counters (add sites) via Management API
 - `yandex_metrica_delete_counter` tool — delete counters via Management API
