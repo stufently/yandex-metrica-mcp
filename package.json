@@ -1,5 +1,5 @@
 {
-  "name": "mcp-yandex-metrica",
+  "name": "@stufently/mcp-yandex-metrica",
   "version": "0.1.0",
   "description": "Read-only MCP server for Yandex Metrica Reporting and Logs API",
   "type": "module",
@@ -7,9 +7,22 @@
     "node": ">=24"
   },
   "main": "dist/index.js",
+  "bin": {
+    "mcp-yandex-metrica": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
+    "prepack": "npm run build",
     "start": "node dist/index.js",
     "lint": "eslint src tests",
     "lint:fix": "eslint src tests --fix",

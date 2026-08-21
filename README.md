@@ -120,10 +120,35 @@ The counter ID is the numeric ID of your Yandex Metrica tag (счётчик):
 
 ## Installation
 
+Pick one of three ways to run the server.
+
+### 1. Docker (no Node.js required)
+
+```bash
+docker pull ghcr.io/stufently/mcp-yandex-metrica:latest
+```
+
+Tags published to GHCR: `latest` (every push to `main`), `main`, `sha-<short>`, and
+`X.Y.Z` / `X.Y` / `X` on version tags. Pin a version tag for reproducible setups.
+
+### 2. npm
+
+The npm identifier is **scoped** — the unscoped `mcp-yandex-metrica` on npm belongs to
+an unrelated project, so this one ships as `@stufently/mcp-yandex-metrica`:
+
+```bash
+npm install -g @stufently/mcp-yandex-metrica
+```
+
+> The first npm release has not been cut yet, so this command does not work today.
+> Until it is published, use Docker or the source install.
+
+### 3. From source
+
 ```bash
 git clone https://github.com/stufently/mcp-yandex-metrica.git
 cd mcp-yandex-metrica
-npm install
+npm install && npm run build
 ```
 
 ---
@@ -182,7 +207,7 @@ npm run format
 # Use pre-built image from GHCR (updated on every push to main)
 docker run -i --rm \
   -e YANDEX_METRICA_TOKEN=your_token \
-  ghcr.io/stufently/mcp-yandex-metrica:main
+  ghcr.io/stufently/mcp-yandex-metrica:latest
 
 # Or build locally
 docker build -t mcp-yandex-metrica:local .
@@ -203,103 +228,168 @@ docker-compose run --rm mcp-yandex-metrica
 
 ---
 
-## Claude Code Configuration
+## Client Configuration
 
-There are two ways to register the server: via the `claude mcp add` command (quickest) or by manually editing a config file.
+All configs below are copy-paste ready. Replace `your_oauth_token_here` with your
+Yandex OAuth token and nothing else.
 
-### Option 1 — claude mcp add (recommended)
+The Docker variant needs no Node.js and no clone — the image is rebuilt and pushed to
+GHCR on every push to `main`.
 
-No cloning required — uses the pre-built image from GitHub Container Registry:
+### Claude Code
+
+Fastest path — `claude mcp add`:
 
 ```bash
 claude mcp add yandex-metrica \
   --transport stdio \
   -- docker run -i --rm \
   -e YANDEX_METRICA_TOKEN=your_oauth_token_here \
-  ghcr.io/stufently/mcp-yandex-metrica:main
+  ghcr.io/stufently/mcp-yandex-metrica:latest
 ```
 
-The image is rebuilt and pushed to GHCR automatically on every push to `main` via GitHub Actions.
+Or edit a config file by hand — `~/.claude.json` for global scope, or `.mcp.json` in
+the project root for project scope (checked into git):
 
-**Via Node.js (after build):**
+```json
+{
+  "mcpServers": {
+    "yandex-metrica": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm",
+        "-e", "YANDEX_METRICA_TOKEN=your_oauth_token_here",
+        "ghcr.io/stufently/mcp-yandex-metrica:latest"
+      ]
+    }
+  }
+}
+```
+
+Verify:
 
 ```bash
-git clone https://github.com/stufently/mcp-yandex-metrica.git
-cd mcp-yandex-metrica
-npm install && npm run build
+claude mcp list                 # should show yandex-metrica
+claude mcp get yandex-metrica   # shows full config
+```
 
+### Claude Desktop
+
+Edit `claude_desktop_config.json`:
+
+- macOS — `~/Library/Application Support/Claude/claude_desktop_config.json`
+- Windows — `%APPDATA%\Claude\claude_desktop_config.json`
+- Linux — `~/.config/Claude/claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "yandex-metrica": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm",
+        "-e", "YANDEX_METRICA_TOKEN=your_oauth_token_here",
+        "ghcr.io/stufently/mcp-yandex-metrica:latest"
+      ]
+    }
+  }
+}
+```
+
+Restart Claude Desktop after saving.
+
+### Cursor
+
+Edit `~/.cursor/mcp.json` for all projects, or `.cursor/mcp.json` inside a project:
+
+```json
+{
+  "mcpServers": {
+    "yandex-metrica": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm",
+        "-e", "YANDEX_METRICA_TOKEN=your_oauth_token_here",
+        "ghcr.io/stufently/mcp-yandex-metrica:latest"
+      ]
+    }
+  }
+}
+```
+
+### Running from a local build instead of Docker
+
+Works in any of the three clients — swap the `command`/`args` for:
+
+```json
+{
+  "mcpServers": {
+    "yandex-metrica": {
+      "command": "node",
+      "args": ["/absolute/path/to/mcp-yandex-metrica/dist/index.js"],
+      "env": {
+        "YANDEX_METRICA_TOKEN": "your_oauth_token_here"
+      }
+    }
+  }
+}
+```
+
+In Claude Code the same thing via CLI:
+
+```bash
 claude mcp add yandex-metrica \
   --transport stdio \
   -e YANDEX_METRICA_TOKEN=your_oauth_token_here \
   -- node /absolute/path/to/mcp-yandex-metrica/dist/index.js
 ```
 
-### Option 2 — manual config file
-
-**Global scope** — edit `~/.claude.json`, find (or create) the `mcpServers` key:
-
-```json
-{
-  "mcpServers": {
-    "yandex-metrica": {
-      "command": "docker",
-      "args": [
-        "run", "-i", "--rm",
-        "-e", "YANDEX_METRICA_TOKEN=your_oauth_token_here",
-        "ghcr.io/stufently/mcp-yandex-metrica:main"
-      ]
-    }
-  }
-}
-```
-
-**Project scope** — create `.mcp.json` in the project root (checked into git):
-
-```json
-{
-  "mcpServers": {
-    "yandex-metrica": {
-      "command": "docker",
-      "args": [
-        "run", "-i", "--rm",
-        "-e", "YANDEX_METRICA_TOKEN=your_oauth_token_here",
-        "ghcr.io/stufently/mcp-yandex-metrica:main"
-      ]
-    }
-  }
-}
-```
-
-### Verify it's working
-
-```bash
-claude mcp list            # should show yandex-metrica
-claude mcp get yandex-metrica  # shows full config
-```
-
-Then in a Claude Code session just ask:
-
-```
-List all my Yandex Metrica counters.
-```
-
 ---
 
-## Example Prompts
+## Common prompts
+
+Once the server is registered, ask in plain language — the client picks the tool.
+
+**List what you have access to** → `yandex_metrica_list_counters`
 
 ```
-List all my Yandex Metrica counters.
+List all my Yandex Metrica counters with their IDs and site names.
+```
 
-Show me visits and bounce rate for counter 12345678 for the last 7 days, broken down by date.
+**Traffic report over a period** → `yandex_metrica_get_report`
 
-What were the top 10 traffic sources for counter 12345678 last month?
+```
+Show visits, users and bounce rate for counter 12345678 for the last 7 days,
+broken down by date.
+```
 
-Create a logs export for counter 12345678 for visits from 2024-01-01 to 2024-01-07
-with fields: visitID, date, clientID, startURL, trafficSource.
+**Top traffic sources** → `yandex_metrica_get_report`
 
-Check status of logs request 99001 for counter 12345678.
+```
+What were the top 10 traffic sources for counter 12345678 last month,
+by visits and conversion rate?
+```
 
-Download part 0 of logs request 99001 for counter 12345678 (preview only).
+**Compare two periods** → `yandex_metrica_get_report` with `date1_b`/`date2_b`
+
+```
+Compare visits and average session duration for counter 12345678
+between this month and the same month last year.
+```
+
+**Goal conversions** → `yandex_metrica_list_goals` + `yandex_metrica_get_report`
+
+```
+List the goals configured on counter 12345678, then show conversions
+for each of them over the last 30 days.
+```
+
+**Raw event export** → the Logs API chain (`evaluate` → `create` → `get` → `download_part` → `clean`)
+
+```
+Export raw visits for counter 12345678 from 2024-01-01 to 2024-01-07 with fields
+visitID, date, clientID, startURL, trafficSource. Poll until it is ready,
+then show me a preview of the first part.
 ```
 
 ---
@@ -332,7 +422,7 @@ src/
 ## Limitations
 
 - **Mostly read-only** (plus counter create/delete and Logs API lifecycle operations)
-- **No comparison report tool** — use `yandex_metrica_get_report` with `date1b`/`date2b` params
+- **No comparison report tool** — use `yandex_metrica_get_report` with `date1_b`/`date2_b` params
 - **No drilldown/pivot/bytime tools** in v1 — planned for v0.2
 - **No caching** — every tool call hits the Yandex API
 - **Large log parts** — use `mode: "full"` carefully; defaults to 50KB preview
@@ -361,7 +451,16 @@ GitHub Actions workflows are in `.github/workflows/`:
 - `ci.yml` — lint, typecheck, test, build on every push/PR
 - `docker.yml` — build Docker image; push to GHCR on pushes to `main` and version tags
 
-To publish, update `REGISTRY` and `IMAGE_NAME` in `docker.yml` or rely on `${{ github.repository }}` defaults.
+Image tags produced by `docker.yml`:
+
+| Tag | When |
+|-----|------|
+| `latest` | every push to `main` |
+| `main` | every push to `main` |
+| `sha-<short>` | every push to `main` and every version tag |
+| `X.Y.Z`, `X.Y`, `X` | pushing a `vX.Y.Z` git tag |
+
+`REGISTRY` and `IMAGE_NAME` default to `ghcr.io` and `${{ github.repository }}`.
 
 ---
 

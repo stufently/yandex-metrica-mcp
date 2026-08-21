@@ -4,6 +4,35 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+- **BREAKING (npm package name)** — package renamed from `mcp-yandex-metrica` to the
+  scoped `@stufently/mcp-yandex-metrica`. The unscoped name on npm is already taken by
+  an unrelated project (maintainer `gistrec`, latest 1.4.1), so publishing under it is
+  impossible. In practice nobody is affected: this package has never been published to
+  npm, so no install can break. The **GitHub repository, the Docker image name and the
+  MCP server name stay `mcp-yandex-metrica`** — only the npm identifier changed.
+- README: Docker/GHCR examples now pull `:latest` instead of `:main`.
+- README: install section split into Docker / npm / from-source; added copy-paste
+  configs for Claude Code, Claude Desktop and Cursor, plus a "Common prompts" section.
+
+### Fixed
+- README "Limitations": comparison params were documented as `date1b`/`date2b`; the
+  schema actually takes `date1_b`/`date2_b`.
+
+### Added
+- `package.json`: `publishConfig.access = "public"` — without it npm refuses to publish
+  a scoped package (defaults to restricted, which needs a paid plan).
+- `package.json`: `bin` (`mcp-yandex-metrica` → `dist/index.js`) and `files` whitelist,
+  so the published tarball ships only `dist` and is runnable via `npx`.
+- `package.json`: `prepack` script running the build. `dist/` is gitignored, so without
+  it `npm pack`/`npm publish` from a clean checkout produced a tarball containing only
+  the four metadata files — no `dist/index.js`, and npm gave no warning about it.
+- `src/index.ts`: `#!/usr/bin/env node` shebang, required for the `bin` entry to work.
+- CI (`docker.yml`): image now also gets a `latest` tag on the default branch and an
+  `X` major tag on version tags. Previously only `main` and `sha-*` were ever pushed,
+  because no version tag has been created yet — nothing for users to pin, and a bare
+  `docker pull` without a tag failed.
+
 ### Security
 - CI: third-party actions in `.github/workflows/docker.yml` pinned by commit SHA
   (`docker/setup-buildx-action@8d2750c6` v3.12.0, `docker/login-action@c94ce9fb`
