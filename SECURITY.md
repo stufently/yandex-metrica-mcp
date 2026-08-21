@@ -7,6 +7,7 @@ Please **do not** open a public GitHub issue for security vulnerabilities.
 Report security issues by email to the maintainer listed in `package.json`, or open a [GitHub Security Advisory](https://github.com/stufently/mcp-yandex-metrica/security/advisories/new).
 
 Include:
+
 - Description of the vulnerability
 - Steps to reproduce
 - Potential impact

@@ -105,7 +105,10 @@ describe("Logs API lifecycle (mocked)", () => {
   });
 
   it("cancelLogsRequest POSTs to cancel endpoint", async () => {
-    const cancelledRequest = { ...fixtureLogRequestResponse.log_request, status: "canceled" as const };
+    const cancelledRequest = {
+      ...fixtureLogRequestResponse.log_request,
+      status: "canceled" as const,
+    };
     mockFetch({ log_request: cancelledRequest });
     const client = createLogsClient(testConfig());
     const result = await client.cancelLogsRequest({
@@ -118,7 +121,10 @@ describe("Logs API lifecycle (mocked)", () => {
   });
 
   it("cleanLogsRequest POSTs to clean endpoint", async () => {
-    const cleanedRequest = { ...fixtureLogRequestResponse.log_request, status: "cleaned_by_user" as const };
+    const cleanedRequest = {
+      ...fixtureLogRequestResponse.log_request,
+      status: "cleaned_by_user" as const,
+    };
     mockFetch({ log_request: cleanedRequest });
     const client = createLogsClient(testConfig());
     const result = await client.cleanLogsRequest({

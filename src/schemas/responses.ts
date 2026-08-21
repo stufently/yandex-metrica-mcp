@@ -129,9 +129,7 @@ export const logRequestEvaluationResponseSchema = z
 export function validateResponse<T>(schema: z.ZodType<T>, data: unknown, context: string): T {
   const result = schema.safeParse(data);
   if (!result.success) {
-    const issues = result.error.issues
-      .map((i) => `${i.path.join(".")}: ${i.message}`)
-      .join("; ");
+    const issues = result.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; ");
     throw new Error(`Unexpected response format from ${context}: ${issues}`);
   }
   return result.data;

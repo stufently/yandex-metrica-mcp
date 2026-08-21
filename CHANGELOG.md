@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Changed
+
 - **BREAKING (npm package name)** — package renamed from `mcp-yandex-metrica` to the
   scoped `@stufently/mcp-yandex-metrica`. The unscoped name on npm is already taken by
   an unrelated project (maintainer `gistrec`, latest 1.4.1), so publishing under it is
@@ -16,6 +17,7 @@ All notable changes to this project will be documented in this file.
   configs for Claude Code, Claude Desktop and Cursor, plus a "Common prompts" section.
 
 ### Removed
+
 - Dead `ReportQuery` interface in `src/types/api.ts`. Nothing imported it — the live
   request shapes are `GetReportParams`/`GetComparisonParams` in `src/client/reporting.ts`.
   It still carried the pre-fix `date1b`/`date2b` field names, which the comparison fix
@@ -23,10 +25,12 @@ All notable changes to this project will be documented in this file.
   (`[key: string]: …`) meant TypeScript would never have flagged the stale names.
 
 ### Fixed
+
 - README "Limitations": comparison params were documented as `date1b`/`date2b`; the
   schema actually takes `date1_b`/`date2_b`.
 
 ### Added
+
 - `package.json`: `publishConfig.access = "public"` — without it npm refuses to publish
   a scoped package (defaults to restricted, which needs a paid plan).
 - `package.json`: `bin` (`mcp-yandex-metrica` → `dist/index.js`) and `files` whitelist,
@@ -41,6 +45,7 @@ All notable changes to this project will be documented in this file.
   `docker pull` without a tag failed.
 
 ### Security
+
 - CI: third-party actions in `.github/workflows/docker.yml` pinned by commit SHA
   (`docker/setup-buildx-action@8d2750c6` v3.12.0, `docker/login-action@c94ce9fb`
   v3.7.0, `docker/metadata-action@c299e40c` v5.10.0,
@@ -49,6 +54,7 @@ All notable changes to this project will be documented in this file.
   build behaviour unchanged. First-party `actions/*` left on `vN`.
 
 ### Added
+
 - `yandex_metrica_create_counter` tool — create new counters (add sites) via Management API
 - `yandex_metrica_delete_counter` tool — delete counters via Management API
 - HTTP client: `postJsonBody` method for POST with JSON body
@@ -57,6 +63,7 @@ All notable changes to this project will be documented in this file.
 - Management client: `createCounter`, `deleteCounter` methods
 
 ### Fixed
+
 - ESLint: added Node.js/Web globals (`fetch`, `URL`, `AbortController`, `TextDecoder`, etc.) — lint now passes cleanly
 - HTTP client: POST requests no longer retried (only GET); prevents duplicate `createLogsRequest` on transient 5xx
 - Comparison endpoint: corrected to `/stat/v1/data/comparison` with `date1_a/date2_a/date1_b/date2_b` params
@@ -68,12 +75,14 @@ All notable changes to this project will be documented in this file.
 - Error cause propagated in timeout error
 
 ### Added
+
 - 5 new integration tests for `getComparison` (endpoint routing, param passing, `{a,b}` format, schema rejection, filters)
 - `fixtureComparisonResponse` with correct `metrics: { a, b }` format
 
 ## [0.1.0] - 2026-03-15
 
 ### Added
+
 - MCP server with stdio transport for Yandex Metrica
 - Counter tools: `list_counters`, `get_counter`, `list_goals`
 - Reporting API tool: `get_report` with period comparison (`date1b`/`date2b`)

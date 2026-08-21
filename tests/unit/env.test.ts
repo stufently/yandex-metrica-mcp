@@ -46,8 +46,6 @@ describe("loadConfig", () => {
   });
 
   it("rejects invalid log level", () => {
-    expect(() =>
-      loadConfig({ YANDEX_METRICA_TOKEN: "tok", LOG_LEVEL: "verbose" }),
-    ).toThrow();
+    expect(() => loadConfig({ YANDEX_METRICA_TOKEN: "tok", LOG_LEVEL: "verbose" })).toThrow();
   });
 });

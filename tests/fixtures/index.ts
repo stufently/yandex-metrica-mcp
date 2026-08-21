@@ -1,4 +1,13 @@
-import type { Counter, CountersResponse, CounterResponse, GoalsResponse, ReportResponse, LogRequestResponse, LogRequestsResponse, LogRequestEvaluationResponse } from "../../src/types/api.js";
+import type {
+  Counter,
+  CountersResponse,
+  CounterResponse,
+  GoalsResponse,
+  ReportResponse,
+  LogRequestResponse,
+  LogRequestsResponse,
+  LogRequestEvaluationResponse,
+} from "../../src/types/api.js";
 
 export const FIXTURE_COUNTER_ID = 12345678;
 export const FIXTURE_REQUEST_ID = 99001;
@@ -30,7 +39,12 @@ export const fixtureCounterResponse: CounterResponse = {
 export const fixtureGoalsResponse: GoalsResponse = {
   goals: [
     { id: 1, name: "Purchase", type: "action" },
-    { id: 2, name: "Registration", type: "url", conditions: [{ type: "contain", url: "/success" }] },
+    {
+      id: 2,
+      name: "Registration",
+      type: "url",
+      conditions: [{ type: "contain", url: "/success" }],
+    },
   ],
 };
 
@@ -120,6 +134,4 @@ export const fixtureComparisonResponse = {
 };
 
 export const fixtureTsvContent =
-  "ym:s:visitID\tym:s:date\tym:s:clientID\n" +
-  "111\t2024-01-01\tabc\n" +
-  "222\t2024-01-02\tdef\n";
+  "ym:s:visitID\tym:s:date\tym:s:clientID\n" + "111\t2024-01-01\tabc\n" + "222\t2024-01-02\tdef\n";

@@ -44,8 +44,7 @@ export interface DownloadLogsPartParams {
 export function createLogsClient(config: Config) {
   const http = createHttpClient(config);
 
-  const base = (counterId: number) =>
-    `/management/v1/counter/${counterId}/logrequests`;
+  const base = (counterId: number) => `/management/v1/counter/${counterId}/logrequests`;
 
   const req = (counterId: number, requestId: number) =>
     `/management/v1/counter/${counterId}/logrequest/${requestId}`;
@@ -53,15 +52,12 @@ export function createLogsClient(config: Config) {
   async function evaluateLogsRequest(
     params: LogsEvaluateParams,
   ): Promise<LogRequestEvaluationResponse> {
-    const raw = await http.getJson<unknown>(
-      `${base(params.counter_id)}/evaluate`,
-      {
-        date1: params.date1,
-        date2: params.date2,
-        source: params.source,
-        fields: params.fields,
-      },
-    );
+    const raw = await http.getJson<unknown>(`${base(params.counter_id)}/evaluate`, {
+      date1: params.date1,
+      date2: params.date2,
+      source: params.source,
+      fields: params.fields,
+    });
     return validateResponse(
       logRequestEvaluationResponseSchema,
       raw,
@@ -109,9 +105,7 @@ export function createLogsClient(config: Config) {
   }
 
   async function cancelLogsRequest(params: LogsRequestIdParams): Promise<LogRequestResponse> {
-    const raw = await http.postJson<unknown>(
-      `${req(params.counter_id, params.request_id)}/cancel`,
-    );
+    const raw = await http.postJson<unknown>(`${req(params.counter_id, params.request_id)}/cancel`);
     return validateResponse(
       logRequestResponseSchema,
       raw,
@@ -120,9 +114,7 @@ export function createLogsClient(config: Config) {
   }
 
   async function cleanLogsRequest(params: LogsRequestIdParams): Promise<LogRequestResponse> {
-    const raw = await http.postJson<unknown>(
-      `${req(params.counter_id, params.request_id)}/clean`,
-    );
+    const raw = await http.postJson<unknown>(`${req(params.counter_id, params.request_id)}/clean`);
     return validateResponse(
       logRequestResponseSchema,
       raw,

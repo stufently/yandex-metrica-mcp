@@ -33,31 +33,34 @@ This MCP server exposes both APIs as named tools that an LLM can call directly.
 ## Supported MCP Tools
 
 ### Counter Management
-| Tool | Description |
-|------|-------------|
-| `yandex_metrica_list_counters` | List accessible counters (tags) |
-| `yandex_metrica_get_counter` | Get counter details by ID |
-| `yandex_metrica_list_goals` | List goals for a counter |
+
+| Tool                            | Description                       |
+| ------------------------------- | --------------------------------- |
+| `yandex_metrica_list_counters`  | List accessible counters (tags)   |
+| `yandex_metrica_get_counter`    | Get counter details by ID         |
+| `yandex_metrica_list_goals`     | List goals for a counter          |
 | `yandex_metrica_create_counter` | Create a new counter (add a site) |
-| `yandex_metrica_delete_counter` | Delete a counter permanently |
+| `yandex_metrica_delete_counter` | Delete a counter permanently      |
 
 ### Reporting API (aggregated)
-| Tool | Description |
-|------|-------------|
+
+| Tool                        | Description               |
+| --------------------------- | ------------------------- |
 | `yandex_metrica_get_report` | Run a Reporting API query |
 
 > For period comparison, pass `date1_b`/`date2_b` to `yandex_metrica_get_report`. The tool automatically routes to `/stat/v1/data/comparison`; `date1`/`date2` become segment A, `date1_b`/`date2_b` become segment B. Each result row returns `metrics: { a, b }`.
 
 ### Logs API (raw export)
-| Tool | Description |
-|------|-------------|
-| `yandex_metrica_evaluate_logs_request` | Check if export is possible |
-| `yandex_metrica_create_logs_request` | Create an async export request |
-| `yandex_metrica_list_logs_requests` | List all requests for a counter |
-| `yandex_metrica_get_logs_request` | Poll status of a request |
-| `yandex_metrica_download_logs_part` | Download a processed part (TSV) |
-| `yandex_metrica_cancel_logs_request` | Cancel a pending request |
-| `yandex_metrica_clean_logs_request` | Clean processed files to free quota |
+
+| Tool                                   | Description                         |
+| -------------------------------------- | ----------------------------------- |
+| `yandex_metrica_evaluate_logs_request` | Check if export is possible         |
+| `yandex_metrica_create_logs_request`   | Create an async export request      |
+| `yandex_metrica_list_logs_requests`    | List all requests for a counter     |
+| `yandex_metrica_get_logs_request`      | Poll status of a request            |
+| `yandex_metrica_download_logs_part`    | Download a processed part (TSV)     |
+| `yandex_metrica_cancel_logs_request`   | Cancel a pending request            |
+| `yandex_metrica_clean_logs_request`    | Clean processed files to free quota |
 
 ---
 
@@ -161,13 +164,13 @@ Copy `.env.example` to `.env` and set your token:
 cp .env.example .env
 ```
 
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `YANDEX_METRICA_TOKEN` | **Yes** | — | OAuth token with `metrika:read` |
-| `YANDEX_METRICA_TIMEOUT_MS` | No | `30000` | Request timeout in ms |
-| `LOG_LEVEL` | No | `info` | Log level: debug, info, warn, error, silent |
-| `YANDEX_METRICA_USER_AGENT` | No | `mcp-yandex-metrica/0.1.0` | Custom User-Agent |
-| `YANDEX_METRICA_BASE_URL` | No | `https://api-metrika.yandex.net` | API base URL (tests only) |
+| Variable                    | Required | Default                          | Description                                 |
+| --------------------------- | -------- | -------------------------------- | ------------------------------------------- |
+| `YANDEX_METRICA_TOKEN`      | **Yes**  | —                                | OAuth token with `metrika:read`             |
+| `YANDEX_METRICA_TIMEOUT_MS` | No       | `30000`                          | Request timeout in ms                       |
+| `LOG_LEVEL`                 | No       | `info`                           | Log level: debug, info, warn, error, silent |
+| `YANDEX_METRICA_USER_AGENT` | No       | `mcp-yandex-metrica/0.1.0`       | Custom User-Agent                           |
+| `YANDEX_METRICA_BASE_URL`   | No       | `https://api-metrika.yandex.net` | API base URL (tests only)                   |
 
 ---
 
@@ -257,8 +260,11 @@ the project root for project scope (checked into git):
     "yandex-metrica": {
       "command": "docker",
       "args": [
-        "run", "-i", "--rm",
-        "-e", "YANDEX_METRICA_TOKEN=your_oauth_token_here",
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "YANDEX_METRICA_TOKEN=your_oauth_token_here",
         "ghcr.io/stufently/mcp-yandex-metrica:latest"
       ]
     }
@@ -287,8 +293,11 @@ Edit `claude_desktop_config.json`:
     "yandex-metrica": {
       "command": "docker",
       "args": [
-        "run", "-i", "--rm",
-        "-e", "YANDEX_METRICA_TOKEN=your_oauth_token_here",
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "YANDEX_METRICA_TOKEN=your_oauth_token_here",
         "ghcr.io/stufently/mcp-yandex-metrica:latest"
       ]
     }
@@ -308,8 +317,11 @@ Edit `~/.cursor/mcp.json` for all projects, or `.cursor/mcp.json` inside a proje
     "yandex-metrica": {
       "command": "docker",
       "args": [
-        "run", "-i", "--rm",
-        "-e", "YANDEX_METRICA_TOKEN=your_oauth_token_here",
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "YANDEX_METRICA_TOKEN=your_oauth_token_here",
         "ghcr.io/stufently/mcp-yandex-metrica:latest"
       ]
     }
@@ -448,17 +460,18 @@ npm run test:live
 ## CI / Docker Image
 
 GitHub Actions workflows are in `.github/workflows/`:
+
 - `ci.yml` — lint, typecheck, test, build on every push/PR
 - `docker.yml` — build Docker image; push to GHCR on pushes to `main` and version tags
 
 Image tags produced by `docker.yml`:
 
-| Tag | When |
-|-----|------|
-| `latest` | every push to `main` |
-| `main` | every push to `main` |
-| `sha-<short>` | every push to `main` and every version tag |
-| `X.Y.Z`, `X.Y`, `X` | pushing a `vX.Y.Z` git tag |
+| Tag                 | When                                       |
+| ------------------- | ------------------------------------------ |
+| `latest`            | every push to `main`                       |
+| `main`              | every push to `main`                       |
+| `sha-<short>`       | every push to `main` and every version tag |
+| `X.Y.Z`, `X.Y`, `X` | pushing a `vX.Y.Z` git tag                 |
 
 `REGISTRY` and `IMAGE_NAME` default to `ghcr.io` and `${{ github.repository }}`.
 

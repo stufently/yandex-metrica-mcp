@@ -32,10 +32,12 @@ export function registerGetReport(server: McpServer, config: Config): void {
           if (!args.date1_b || !args.date2_b) {
             return {
               isError: true as const,
-              content: [{
-                type: "text" as const,
-                text: "Both date1_b and date2_b must be provided together for period comparison.",
-              }],
+              content: [
+                {
+                  type: "text" as const,
+                  text: "Both date1_b and date2_b must be provided together for period comparison.",
+                },
+              ],
             };
           }
           const result = await client.getComparison({

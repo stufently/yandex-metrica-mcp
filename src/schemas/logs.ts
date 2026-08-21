@@ -1,19 +1,22 @@
 import { z } from "zod";
 import { counterId, requestId, dateString } from "./common.js";
 
-const logSource = z.enum(["hits", "visits"]).describe(
-  "'hits' for pageview-level data, 'visits' for session-level data"
-);
+const logSource = z
+  .enum(["hits", "visits"])
+  .describe("'hits' for pageview-level data, 'visits' for session-level data");
 
 export const evaluateLogsRequestSchema = z.object({
   counter_id: counterId,
   date1: dateString.describe("Start date YYYY-MM-DD"),
   date2: dateString.describe("End date YYYY-MM-DD (cannot be current day)"),
   source: logSource,
-  fields: z.array(z.string().min(1)).min(1).describe(
-    "Fields to export. For visits: ['ym:s:visitID','ym:s:date','ym:s:clientID',...]. " +
-    "For hits: ['ym:pv:watchID','ym:pv:date','ym:pv:URL',...]"
-  ),
+  fields: z
+    .array(z.string().min(1))
+    .min(1)
+    .describe(
+      "Fields to export. For visits: ['ym:s:visitID','ym:s:date','ym:s:clientID',...]. " +
+        "For hits: ['ym:pv:watchID','ym:pv:date','ym:pv:URL',...]",
+    ),
 });
 
 export const createLogsRequestSchema = z.object({
@@ -21,9 +24,10 @@ export const createLogsRequestSchema = z.object({
   date1: dateString.describe("Start date YYYY-MM-DD"),
   date2: dateString.describe("End date YYYY-MM-DD (cannot be current day)"),
   source: logSource,
-  fields: z.array(z.string().min(1)).min(1).describe(
-    "Fields to export. See Yandex Metrica Logs API documentation for full field lists."
-  ),
+  fields: z
+    .array(z.string().min(1))
+    .min(1)
+    .describe("Fields to export. See Yandex Metrica Logs API documentation for full field lists."),
   attribution: z
     .enum([
       "first",
@@ -58,7 +62,7 @@ export const downloadLogsPartSchema = z.object({
     .default("preview")
     .describe(
       "Output mode. 'preview' returns first ~50KB with metadata (safe default). " +
-      "'full' returns entire content — may be very large for big exports."
+        "'full' returns entire content — may be very large for big exports.",
     ),
 });
 

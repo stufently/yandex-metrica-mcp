@@ -8,14 +8,6 @@ export const dateString = z
     "Date must be YYYY-MM-DD or a relative alias like 'today', 'yesterday', '7daysAgo'",
   );
 
-export const counterId = z
-  .number()
-  .int()
-  .positive()
-  .describe("Yandex Metrica counter (tag) ID");
+export const counterId = z.number().int().positive().describe("Yandex Metrica counter (tag) ID");
 
-export const requestId = z
-  .number()
-  .int()
-  .positive()
-  .describe("Logs API request ID");
+export const requestId = z.number().int().positive().describe("Logs API request ID");

@@ -20,9 +20,7 @@ export const getReportSchema = z.object({
   date1: dateString
     .optional()
     .describe("Start date (YYYY-MM-DD or 'today', 'yesterday', '7daysAgo'). Default: 7daysAgo"),
-  date2: dateString
-    .optional()
-    .describe("End date (YYYY-MM-DD or relative). Default: today"),
+  date2: dateString.optional().describe("End date (YYYY-MM-DD or relative). Default: today"),
   filters: z
     .string()
     .optional()
@@ -30,9 +28,7 @@ export const getReportSchema = z.object({
   sort: z
     .array(z.string())
     .optional()
-    .describe(
-      "Sort fields. Prefix with '-' for descending, e.g. ['-ym:s:visits', 'ym:s:date']",
-    ),
+    .describe("Sort fields. Prefix with '-' for descending, e.g. ['-ym:s:visits', 'ym:s:date']"),
   limit: z.number().int().min(1).max(100000).optional().describe("Rows to return (default 100)"),
   offset: z.number().int().min(1).optional().describe("Row offset for pagination (1-based)"),
   accuracy: z
@@ -78,9 +74,7 @@ export const getReportSchema = z.object({
     ),
   date2_b: dateString
     .optional()
-    .describe(
-      "Comparison segment B end date. Must be provided together with date1_b.",
-    ),
+    .describe("Comparison segment B end date. Must be provided together with date1_b."),
   filters_a: z
     .string()
     .optional()

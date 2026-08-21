@@ -76,10 +76,7 @@ export function createHttpClient(config: Config) {
     Accept: "application/json",
   };
 
-  async function attemptRequest(
-    method: "GET" | "POST",
-    url: URL,
-  ): Promise<Response> {
+  async function attemptRequest(method: "GET" | "POST", url: URL): Promise<Response> {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), config.YANDEX_METRICA_TIMEOUT_MS);
 
@@ -101,7 +98,9 @@ export function createHttpClient(config: Config) {
     } catch (err) {
       if (err instanceof YandexApiError) throw err;
       if (err instanceof Error && err.name === "AbortError") {
-        throw new Error(`Request timed out after ${config.YANDEX_METRICA_TIMEOUT_MS}ms`, { cause: err });
+        throw new Error(`Request timed out after ${config.YANDEX_METRICA_TIMEOUT_MS}ms`, {
+          cause: err,
+        });
       }
       throw err;
     } finally {
@@ -109,11 +108,7 @@ export function createHttpClient(config: Config) {
     }
   }
 
-  async function request(
-    method: "GET" | "POST",
-    path: string,
-    params?: Params,
-  ): Promise<Response> {
+  async function request(method: "GET" | "POST", path: string, params?: Params): Promise<Response> {
     const url = new URL(path, config.YANDEX_METRICA_BASE_URL);
     assertSafeHost(url);
 
@@ -131,7 +126,11 @@ export function createHttpClient(config: Config) {
         lastError = err;
 
         // Only retry GET requests — POST may not be idempotent (e.g. createLogsRequest)
-        if (method === "GET" && err instanceof YandexApiError && RETRYABLE_STATUSES.has(err.status)) {
+        if (
+          method === "GET" &&
+          err instanceof YandexApiError &&
+          RETRYABLE_STATUSES.has(err.status)
+        ) {
           if (attempt < MAX_RETRIES) {
             const delay = err.retryAfter ?? backoffDelay(attempt);
             await sleep(delay);
@@ -192,9 +191,18 @@ export function createHttpClient(config: Config) {
 
       if (!response.ok) {
         const errBody = await parseErrorBody(response);
-        const message = buildErrorMessage(errBody, `HTTP ${response.status} ${response.statusText}`);
+        const message = buildErrorMessage(
+          errBody,
+          `HTTP ${response.status} ${response.statusText}`,
+        );
         const retryAfter = parseRetryAfter(response);
-        throw new YandexApiError(response.status, errBody.code, message, errBody.errors, retryAfter);
+        throw new YandexApiError(
+          response.status,
+          errBody.code,
+          message,
+          errBody.errors,
+          retryAfter,
+        );
       }
 
       const text = await response.text();
@@ -206,7 +214,9 @@ export function createHttpClient(config: Config) {
     } catch (err) {
       if (err instanceof YandexApiError) throw err;
       if (err instanceof Error && err.name === "AbortError") {
-        throw new Error(`Request timed out after ${config.YANDEX_METRICA_TIMEOUT_MS}ms`, { cause: err });
+        throw new Error(`Request timed out after ${config.YANDEX_METRICA_TIMEOUT_MS}ms`, {
+          cause: err,
+        });
       }
       throw err;
     } finally {
@@ -230,14 +240,25 @@ export function createHttpClient(config: Config) {
 
       if (!response.ok) {
         const errBody = await parseErrorBody(response);
-        const message = buildErrorMessage(errBody, `HTTP ${response.status} ${response.statusText}`);
+        const message = buildErrorMessage(
+          errBody,
+          `HTTP ${response.status} ${response.statusText}`,
+        );
         const retryAfter = parseRetryAfter(response);
-        throw new YandexApiError(response.status, errBody.code, message, errBody.errors, retryAfter);
+        throw new YandexApiError(
+          response.status,
+          errBody.code,
+          message,
+          errBody.errors,
+          retryAfter,
+        );
       }
     } catch (err) {
       if (err instanceof YandexApiError) throw err;
       if (err instanceof Error && err.name === "AbortError") {
-        throw new Error(`Request timed out after ${config.YANDEX_METRICA_TIMEOUT_MS}ms`, { cause: err });
+        throw new Error(`Request timed out after ${config.YANDEX_METRICA_TIMEOUT_MS}ms`, {
+          cause: err,
+        });
       }
       throw err;
     } finally {

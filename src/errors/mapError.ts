@@ -17,9 +17,7 @@ function formatApiError(err: YandexApiError): string {
   } else if (err.status === 404) {
     parts.push(`Not found (HTTP 404): ${err.message}`);
   } else if (err.status === 429) {
-    parts.push(
-      `Rate limit exceeded (HTTP 429): ${err.message}. Wait before retrying.`,
-    );
+    parts.push(`Rate limit exceeded (HTTP 429): ${err.message}. Wait before retrying.`);
   } else if (err.status >= 500) {
     parts.push(`Yandex API server error (HTTP ${err.status}): ${err.message}`);
   } else {

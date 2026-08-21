@@ -7,10 +7,7 @@ export const listCountersSchema = z.object({
   status: z.enum(["Active", "Deleted"]).optional().describe("Filter by counter status"),
   type: z.enum(["simple", "partner"]).optional().describe("Filter by counter type"),
   search: z.string().optional().describe("Search by counter name or site URL"),
-  sort: z
-    .enum(["Default", "Id", "Name", "Site", "Hits"])
-    .optional()
-    .describe("Sort order"),
+  sort: z.enum(["Default", "Id", "Name", "Site", "Hits"]).optional().describe("Sort order"),
 });
 
 export const getCounterSchema = z.object({
