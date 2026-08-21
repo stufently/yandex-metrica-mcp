@@ -15,6 +15,10 @@ All notable changes to this project will be documented in this file.
 - README: Docker/GHCR examples now pull `:latest` instead of `:main`.
 - README: install section split into Docker / npm / from-source; added copy-paste
   configs for Claude Code, Claude Desktop and Cursor, plus a "Common prompts" section.
+- Whole repo reformatted with Prettier in one formatting-only commit. 20 files had
+  drifted, most of them never touched by recent work. Verified formatting-only by
+  compiling before and after: all 31 emitted `.js` files are identical apart from line
+  wrapping and trailing commas.
 
 ### Removed
 
@@ -39,6 +43,8 @@ All notable changes to this project will be documented in this file.
   it `npm pack`/`npm publish` from a clean checkout produced a tarball containing only
   the four metadata files — no `dist/index.js`, and npm gave no warning about it.
 - `src/index.ts`: `#!/usr/bin/env node` shebang, required for the `bin` entry to work.
+- CI (`ci.yml`): `Format check` step running `npm run format:check`. The script existed
+  but no workflow called it, which is how 20 files drifted out of Prettier style unnoticed.
 - CI (`docker.yml`): image now also gets a `latest` tag on the default branch and an
   `X` major tag on version tags. Previously only `main` and `sha-*` were ever pushed,
   because no version tag has been created yet — nothing for users to pin, and a bare
