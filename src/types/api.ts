@@ -61,26 +61,8 @@ export interface GoalsResponse {
 
 // Reporting API types
 
-export interface ReportQuery {
-  ids: string;
-  metrics: string;
-  dimensions?: string;
-  date1?: string;
-  date2?: string;
-  filters?: string;
-  sort?: string;
-  limit?: number;
-  offset?: number;
-  accuracy?: string;
-  currency?: string;
-  attribution?: string;
-  lang?: string;
-  include_undefined?: boolean;
-  date1b?: string;
-  date2b?: string;
-  preset?: string;
-  [key: string]: string | number | boolean | undefined;
-}
+// Request-parameter shapes live with their client, not here: see
+// `GetReportParams` / `GetComparisonParams` in src/client/reporting.ts.
 
 export interface DimensionValue {
   name: string | null;

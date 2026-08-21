@@ -15,6 +15,13 @@ All notable changes to this project will be documented in this file.
 - README: install section split into Docker / npm / from-source; added copy-paste
   configs for Claude Code, Claude Desktop and Cursor, plus a "Common prompts" section.
 
+### Removed
+- Dead `ReportQuery` interface in `src/types/api.ts`. Nothing imported it — the live
+  request shapes are `GetReportParams`/`GetComparisonParams` in `src/client/reporting.ts`.
+  It still carried the pre-fix `date1b`/`date2b` field names, which the comparison fix
+  had already corrected to `date1_b`/`date2_b` everywhere that runs; its index signature
+  (`[key: string]: …`) meant TypeScript would never have flagged the stale names.
+
 ### Fixed
 - README "Limitations": comparison params were documented as `date1b`/`date2b`; the
   schema actually takes `date1_b`/`date2_b`.
