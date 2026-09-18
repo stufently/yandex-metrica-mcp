@@ -5,8 +5,8 @@ Contributions are welcome. Please follow these guidelines.
 ## Setup
 
 ```bash
-git clone https://github.com/stufently/mcp-yandex-metrica.git
-cd mcp-yandex-metrica
+git clone https://github.com/stufently/yandex-metrica-mcp.git
+cd yandex-metrica-mcp
 npm install
 cp .env.example .env   # add your YANDEX_METRICA_TOKEN
 ```

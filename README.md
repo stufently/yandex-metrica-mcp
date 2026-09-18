@@ -1,4 +1,4 @@
-# mcp-yandex-metrica
+# yandex-metrica-mcp
 
 Read-only MCP server for the Yandex Metrica Reporting API and Logs API, designed for use with [Claude Code](https://claude.ai/claude-code) and [Codex CLI](https://openai.com/codex).
 
@@ -128,7 +128,7 @@ Pick one of three ways to run the server.
 ### 1. Docker (no Node.js required)
 
 ```bash
-docker pull ghcr.io/stufently/mcp-yandex-metrica:latest
+docker pull ghcr.io/stufently/yandex-metrica-mcp:latest
 ```
 
 Tags published to GHCR: `latest` (every push to `main`), `main`, `sha-<short>`, and
@@ -136,11 +136,12 @@ Tags published to GHCR: `latest` (every push to `main`), `main`, `sha-<short>`, 
 
 ### 2. npm
 
-The npm identifier is **scoped** — the unscoped `mcp-yandex-metrica` on npm belongs to
-an unrelated project, so this one ships as `@stufently/mcp-yandex-metrica`:
+The npm identifier is **scoped** — both unscoped names (`yandex-metrica-mcp` and the
+project's former name `mcp-yandex-metrica`) belong to unrelated projects on npm, so this
+one ships as `@stufently/yandex-metrica-mcp` (installs the `yandex-metrica-mcp` command):
 
 ```bash
-npm install -g @stufently/mcp-yandex-metrica
+npm install -g @stufently/yandex-metrica-mcp
 ```
 
 > The first npm release has not been cut yet, so this command does not work today.
@@ -149,8 +150,8 @@ npm install -g @stufently/mcp-yandex-metrica
 ### 3. From source
 
 ```bash
-git clone https://github.com/stufently/mcp-yandex-metrica.git
-cd mcp-yandex-metrica
+git clone https://github.com/stufently/yandex-metrica-mcp.git
+cd yandex-metrica-mcp
 npm install && npm run build
 ```
 
@@ -169,7 +170,7 @@ cp .env.example .env
 | `YANDEX_METRICA_TOKEN`      | **Yes**  | —                                | OAuth token with `metrika:read`             |
 | `YANDEX_METRICA_TIMEOUT_MS` | No       | `30000`                          | Request timeout in ms                       |
 | `LOG_LEVEL`                 | No       | `info`                           | Log level: debug, info, warn, error, silent |
-| `YANDEX_METRICA_USER_AGENT` | No       | `mcp-yandex-metrica/0.1.0`       | Custom User-Agent                           |
+| `YANDEX_METRICA_USER_AGENT` | No       | `yandex-metrica-mcp/0.1.0`       | Custom User-Agent                           |
 | `YANDEX_METRICA_BASE_URL`   | No       | `https://api-metrika.yandex.net` | API base URL (tests only)                   |
 
 ---
@@ -210,13 +211,13 @@ npm run format
 # Use pre-built image from GHCR (updated on every push to main)
 docker run -i --rm \
   -e YANDEX_METRICA_TOKEN=your_token \
-  ghcr.io/stufently/mcp-yandex-metrica:latest
+  ghcr.io/stufently/yandex-metrica-mcp:latest
 
 # Or build locally
-docker build -t mcp-yandex-metrica:local .
+docker build -t yandex-metrica-mcp:local .
 docker run -i --rm \
   -e YANDEX_METRICA_TOKEN=your_token \
-  mcp-yandex-metrica:local
+  yandex-metrica-mcp:local
 ```
 
 ## Docker Compose
@@ -226,7 +227,7 @@ docker run -i --rm \
 cp .env.example .env
 
 # Run
-docker-compose run --rm mcp-yandex-metrica
+docker-compose run --rm yandex-metrica-mcp
 ```
 
 ---
@@ -248,7 +249,7 @@ claude mcp add yandex-metrica \
   --transport stdio \
   -- docker run -i --rm \
   -e YANDEX_METRICA_TOKEN=your_oauth_token_here \
-  ghcr.io/stufently/mcp-yandex-metrica:latest
+  ghcr.io/stufently/yandex-metrica-mcp:latest
 ```
 
 Or edit a config file by hand — `~/.claude.json` for global scope, or `.mcp.json` in
@@ -265,7 +266,7 @@ the project root for project scope (checked into git):
         "--rm",
         "-e",
         "YANDEX_METRICA_TOKEN=your_oauth_token_here",
-        "ghcr.io/stufently/mcp-yandex-metrica:latest"
+        "ghcr.io/stufently/yandex-metrica-mcp:latest"
       ]
     }
   }
@@ -298,7 +299,7 @@ Edit `claude_desktop_config.json`:
         "--rm",
         "-e",
         "YANDEX_METRICA_TOKEN=your_oauth_token_here",
-        "ghcr.io/stufently/mcp-yandex-metrica:latest"
+        "ghcr.io/stufently/yandex-metrica-mcp:latest"
       ]
     }
   }
@@ -322,7 +323,7 @@ Edit `~/.cursor/mcp.json` for all projects, or `.cursor/mcp.json` inside a proje
         "--rm",
         "-e",
         "YANDEX_METRICA_TOKEN=your_oauth_token_here",
-        "ghcr.io/stufently/mcp-yandex-metrica:latest"
+        "ghcr.io/stufently/yandex-metrica-mcp:latest"
       ]
     }
   }
@@ -338,7 +339,7 @@ Works in any of the three clients — swap the `command`/`args` for:
   "mcpServers": {
     "yandex-metrica": {
       "command": "node",
-      "args": ["/absolute/path/to/mcp-yandex-metrica/dist/index.js"],
+      "args": ["/absolute/path/to/yandex-metrica-mcp/dist/index.js"],
       "env": {
         "YANDEX_METRICA_TOKEN": "your_oauth_token_here"
       }
@@ -353,7 +354,7 @@ In Claude Code the same thing via CLI:
 claude mcp add yandex-metrica \
   --transport stdio \
   -e YANDEX_METRICA_TOKEN=your_oauth_token_here \
-  -- node /absolute/path/to/mcp-yandex-metrica/dist/index.js
+  -- node /absolute/path/to/yandex-metrica-mcp/dist/index.js
 ```
 
 ---

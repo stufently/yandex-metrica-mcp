@@ -9,22 +9,22 @@ async function main(): Promise<void> {
     config = loadConfig();
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    process.stderr.write(`[mcp-yandex-metrica] Startup failed: ${message}\n`);
+    process.stderr.write(`[yandex-metrica-mcp] Startup failed: ${message}\n`);
     process.exit(1);
   }
 
   const server = createServer(config);
   const transport = new StdioServerTransport();
 
-  process.stderr.write("[mcp-yandex-metrica] Starting server...\n");
+  process.stderr.write("[yandex-metrica-mcp] Starting server...\n");
 
   await server.connect(transport);
 
-  process.stderr.write("[mcp-yandex-metrica] Server running on stdio\n");
+  process.stderr.write("[yandex-metrica-mcp] Server running on stdio\n");
 }
 
 main().catch((err) => {
   const message = err instanceof Error ? err.message : String(err);
-  process.stderr.write(`[mcp-yandex-metrica] Fatal error: ${message}\n`);
+  process.stderr.write(`[yandex-metrica-mcp] Fatal error: ${message}\n`);
   process.exit(1);
 });

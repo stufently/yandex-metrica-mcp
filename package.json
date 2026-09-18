@@ -1,5 +1,5 @@
 {
-  "name": "@stufently/mcp-yandex-metrica",
+  "name": "@stufently/yandex-metrica-mcp",
   "version": "0.1.0",
   "description": "Read-only MCP server for Yandex Metrica Reporting and Logs API",
   "type": "module",
@@ -8,7 +8,7 @@
   },
   "main": "dist/index.js",
   "bin": {
-    "mcp-yandex-metrica": "dist/index.js"
+    "yandex-metrica-mcp": "dist/index.js"
   },
   "files": [
     "dist",
@@ -50,7 +50,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/stufently/mcp-yandex-metrica.git"
+    "url": "https://github.com/stufently/yandex-metrica-mcp.git"
   },
   "license": "MIT",
   "keywords": [

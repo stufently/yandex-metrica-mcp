@@ -5,7 +5,7 @@ import { registerAllTools } from "./registerTools.js";
 export function createServer(config: Config): McpServer {
   const server = new McpServer(
     {
-      name: "mcp-yandex-metrica",
+      name: "yandex-metrica-mcp",
       version: "0.1.0",
     },
     {

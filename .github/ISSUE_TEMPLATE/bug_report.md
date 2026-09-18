@@ -17,7 +17,7 @@ What you expected to happen.
 
 - OS:
 - Node.js version:
-- Package version (`npm list @stufently/mcp-yandex-metrica` or Docker image tag):
+- Package version (`npm list @stufently/yandex-metrica-mcp` or Docker image tag):
 
 **Logs / error output**
 

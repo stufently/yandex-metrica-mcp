@@ -6,12 +6,16 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
-- **BREAKING (npm package name)** — package renamed from `mcp-yandex-metrica` to the
-  scoped `@stufently/mcp-yandex-metrica`. The unscoped name on npm is already taken by
-  an unrelated project (maintainer `gistrec`, latest 1.4.1), so publishing under it is
-  impossible. In practice nobody is affected: this package has never been published to
-  npm, so no install can break. The **GitHub repository, the Docker image name and the
-  MCP server name stay `mcp-yandex-metrica`** — only the npm identifier changed.
+- **BREAKING (project renamed)** — `mcp-yandex-metrica` → `yandex-metrica-mcp`
+  everywhere: GitHub repository (`stufently/yandex-metrica-mcp`; GitHub redirects the
+  old URL), GHCR image (`ghcr.io/stufently/yandex-metrica-mcp`), `bin` command, MCP
+  server name, default User-Agent (`yandex-metrica-mcp/0.1.0`), docker-compose service
+  and local image tag (`yandex-metrica-mcp:local`). The npm package is the scoped
+  `@stufently/yandex-metrica-mcp`: both unscoped names are taken on npm by unrelated
+  projects (`mcp-yandex-metrica` — maintainer `gistrec`; `yandex-metrica-mcp` —
+  maintainer `dearonski`). Nothing was ever published to npm under the old name, and
+  images already pushed as `ghcr.io/stufently/mcp-yandex-metrica` stay where they are
+  but get no new tags — switch to the new image name.
 - README: Docker/GHCR examples now pull `:latest` instead of `:main`.
 - README: install section split into Docker / npm / from-source; added copy-paste
   configs for Claude Code, Claude Desktop and Cursor, plus a "Common prompts" section.
@@ -37,7 +41,7 @@ All notable changes to this project will be documented in this file.
 
 - `package.json`: `publishConfig.access = "public"` — without it npm refuses to publish
   a scoped package (defaults to restricted, which needs a paid plan).
-- `package.json`: `bin` (`mcp-yandex-metrica` → `dist/index.js`) and `files` whitelist,
+- `package.json`: `bin` (`yandex-metrica-mcp` → `dist/index.js`) and `files` whitelist,
   so the published tarball ships only `dist` and is runnable via `npx`.
 - `package.json`: `prepack` script running the build. `dist/` is gitignored, so without
   it `npm pack`/`npm publish` from a clean checkout produced a tarball containing only
