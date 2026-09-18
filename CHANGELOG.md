@@ -4,12 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-09-18
+
 ### Changed
 
 - **BREAKING (project renamed)** — `mcp-yandex-metrica` → `yandex-metrica-mcp`
   everywhere: GitHub repository (`stufently/yandex-metrica-mcp`; GitHub redirects the
   old URL), GHCR image (`ghcr.io/stufently/yandex-metrica-mcp`), `bin` command, MCP
-  server name, default User-Agent (`yandex-metrica-mcp/0.1.0`), docker-compose service
+  server name, default User-Agent (`yandex-metrica-mcp/0.2.0`), docker-compose service
   and local image tag (`yandex-metrica-mcp:local`). The npm package is the scoped
   `@stufently/yandex-metrica-mcp`: both unscoped names are taken on npm by unrelated
   projects (`mcp-yandex-metrica` — maintainer `gistrec`; `yandex-metrica-mcp` —
