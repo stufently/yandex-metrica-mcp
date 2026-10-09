@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-10-09
+
 ### Added
 
 - `server.json` for the official MCP Registry (`io.github.stufently/yandex-metrica-mcp`),
@@ -12,7 +14,7 @@ All notable changes to this project will be documented in this file.
   server it belongs to.
 - `Dockerfile`: `io.modelcontextprotocol.server.name` label — the registry rejects an OCI
   image without it. Images up to and including `0.2.0` lack it, so `0.2.0` itself cannot be
-  listed; the first listed version is the next tag.
+  listed; `0.2.1` is the first listed version.
 - `docker.yml`: `mcp-registry` job. On a `vX.Y.Z` tag, after the image is pushed, it stamps
   the tag version into `server.json` (fails if it differs from `package.json`), logs in with
   GitHub OIDC and runs `mcp-publisher publish` (v1.8.1, checksum-pinned). The npm package is

@@ -148,7 +148,7 @@ printf '%s\n' \
 ```
 
 Image tags on GHCR: `latest` and `main` (every push to `main`), `sha-<short>`, and
-`X.Y.Z` / `X.Y` / `X` on version tags. Pin a version tag (`:0.2.0`) for reproducible setups.
+`X.Y.Z` / `X.Y` / `X` on version tags. Pin a version tag (`:0.2.1`) for reproducible setups.
 
 ### npm (not published yet)
 
@@ -184,7 +184,7 @@ cp .env.example .env
 | `YANDEX_METRICA_TOKEN`      | **Yes**  | —                                | OAuth token with `metrika:read`             |
 | `YANDEX_METRICA_TIMEOUT_MS` | No       | `30000`                          | Request timeout in ms                       |
 | `LOG_LEVEL`                 | No       | `info`                           | Log level: debug, info, warn, error, silent |
-| `YANDEX_METRICA_USER_AGENT` | No       | `yandex-metrica-mcp/0.2.0`       | Custom User-Agent                           |
+| `YANDEX_METRICA_USER_AGENT` | No       | `yandex-metrica-mcp/0.2.1`       | Custom User-Agent                           |
 | `YANDEX_METRICA_BASE_URL`   | No       | `https://api-metrika.yandex.net` | API base URL (tests only)                   |
 
 ---
