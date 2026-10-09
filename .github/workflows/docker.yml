@@ -59,3 +59,69 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  # Publishes server.json to the official MCP registry
+  # (registry.modelcontextprotocol.io) — the index MCP clients and directories
+  # read. Runs only for a version tag, after the image for that tag is pushed:
+  # the registry checks that the OCI image exists and carries the
+  # io.modelcontextprotocol.server.name label (set in the Dockerfile).
+  # Auth is the workflow's short-lived GitHub OIDC token — no stored secret.
+  mcp-registry:
+    name: Publish to MCP Registry
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      PUBLISHER_VERSION: "1.8.1"
+      PUBLISHER_SHA256: "a06c9096dcb9727c13555b6be26c7effa707b01f06a4c561ba7a3635443cf2cc"
+      NPM_PACKAGE: "@stufently/yandex-metrica-mcp"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Stamp version into server.json
+        run: |
+          ver="${GITHUB_REF_NAME#v}"
+          pkg_ver="$(jq -r .version package.json)"
+          if [ "$ver" != "$pkg_ver" ]; then
+            echo "::error::tag $GITHUB_REF_NAME does not match package.json version $pkg_ver"
+            exit 1
+          fi
+          jq --arg v "$ver" '
+            .version = $v
+            | .packages |= map(
+                if .registryType == "oci"
+                then .identifier = "ghcr.io/stufently/yandex-metrica-mcp:" + $v
+                else .version = $v end)
+          ' server.json > server.stamped.json
+          # The npm release is cut by hand (`npm publish`), so it may lag the tag.
+          # The registry rejects an entry whose npm package is missing or lacks
+          # `mcpName`; publish the OCI package alone rather than fail the release.
+          name="$(jq -r .name server.json)"
+          url="https://registry.npmjs.org/${NPM_PACKAGE/\//%2f}/$ver"
+          if curl -fsS -o npm.json "$url" && [ "$(jq -r '.mcpName // empty' npm.json)" = "$name" ]; then
+            echo "npm $NPM_PACKAGE@$ver found with mcpName, publishing both packages"
+          else
+            echo "::warning::npm $NPM_PACKAGE@$ver not published (or no mcpName) — publishing OCI package only"
+            jq '.packages |= map(select(.registryType != "npm"))' server.stamped.json > server.tmp.json
+            mv server.tmp.json server.stamped.json
+          fi
+          mv server.stamped.json server.json
+          cat server.json
+
+      - name: Install mcp-publisher
+        run: |
+          url="https://github.com/modelcontextprotocol/registry/releases/download/v${PUBLISHER_VERSION}/mcp-publisher_linux_amd64.tar.gz"
+          curl -fsSL -o publisher.tar.gz "$url"
+          echo "${PUBLISHER_SHA256}  publisher.tar.gz" | sha256sum -c -
+          tar -xzf publisher.tar.gz mcp-publisher
+
+      - name: Log in with GitHub OIDC
+        run: ./mcp-publisher login github-oidc
+
+      - name: Publish
+        run: ./mcp-publisher publish

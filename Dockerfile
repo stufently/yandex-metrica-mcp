@@ -18,6 +18,10 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
+# The official MCP registry checks this label against the server name in
+# server.json and rejects an image it cannot trace back to that entry.
+LABEL io.modelcontextprotocol.server.name="io.github.stufently/yandex-metrica-mcp"
+
 COPY package*.json ./
 RUN npm ci --omit=dev && npm cache clean --force
 

@@ -4,6 +4,30 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- `server.json` for the official MCP Registry (`io.github.stufently/yandex-metrica-mcp`),
+  listing the GHCR image and the npm package, both requiring `YANDEX_METRICA_TOKEN`.
+- `package.json`: `mcpName` — the registry only accepts an npm package that names the
+  server it belongs to.
+- `Dockerfile`: `io.modelcontextprotocol.server.name` label — the registry rejects an OCI
+  image without it. Images up to and including `0.2.0` lack it, so `0.2.0` itself cannot be
+  listed; the first listed version is the next tag.
+- `docker.yml`: `mcp-registry` job. On a `vX.Y.Z` tag, after the image is pushed, it stamps
+  the tag version into `server.json` (fails if it differs from `package.json`), logs in with
+  GitHub OIDC and runs `mcp-publisher publish` (v1.8.1, checksum-pinned). The npm package is
+  published by hand and may lag the tag: if that npm version is missing or has no
+  `mcpName`, the job publishes the OCI package alone instead of failing. Pushes to `main`
+  do not publish anything to the registry.
+
+### Changed
+
+- README: one install path — the GHCR Docker image — with a no-token smoke test
+  (`initialize` + `tools/list`), and copy-paste configs for Claude Code, Codex CLI,
+  Claude Desktop, Cursor, Windsurf and Zed. Configs now pass the token through the
+  client's `env` block and `docker run -e YANDEX_METRICA_TOKEN` (no value), so it no
+  longer sits in the `docker` command line.
+
 ## [0.2.0] - 2026-09-18
 
 ### Changed

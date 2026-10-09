@@ -1,0 +1,47 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.stufently/yandex-metrica-mcp",
+  "title": "Yandex Metrica MCP",
+  "description": "Yandex Metrica for AI agents: counters, goals, Reporting API and Logs API export over stdio.",
+  "repository": {
+    "url": "https://github.com/stufently/yandex-metrica-mcp",
+    "source": "github",
+    "id": "1182162579"
+  },
+  "websiteUrl": "https://github.com/stufently/yandex-metrica-mcp",
+  "version": "0.2.0",
+  "packages": [
+    {
+      "registryType": "oci",
+      "identifier": "ghcr.io/stufently/yandex-metrica-mcp:0.2.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "YANDEX_METRICA_TOKEN",
+          "description": "Yandex OAuth token with the metrika:read scope",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
+    },
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "@stufently/yandex-metrica-mcp",
+      "version": "0.2.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "YANDEX_METRICA_TOKEN",
+          "description": "Yandex OAuth token with the metrika:read scope",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}
