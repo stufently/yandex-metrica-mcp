@@ -123,37 +123,51 @@ The counter ID is the numeric ID of your Yandex Metrica tag (счётчик):
 
 ## Installation
 
-Pick one of three ways to run the server.
-
-### 1. Docker (no Node.js required)
-
-```bash
-docker pull ghcr.io/stufently/yandex-metrica-mcp:latest
-```
-
-Tags published to GHCR: `latest` (every push to `main`), `main`, `sha-<short>`, and
-`X.Y.Z` / `X.Y` / `X` on version tags. Pin a version tag for reproducible setups.
-
-### 2. npm
-
-The npm identifier is **scoped** — both unscoped names (`yandex-metrica-mcp` and the
-project's former name `mcp-yandex-metrica`) belong to unrelated projects on npm, so this
-one ships as `@stufently/yandex-metrica-mcp` (installs the `yandex-metrica-mcp` command):
+**One path that works today: Docker.** Nothing to clone, no Node.js. Every MCP client
+below starts the server with the same command:
 
 ```bash
-npm install -g @stufently/yandex-metrica-mcp
+docker run -i --rm -e YANDEX_METRICA_TOKEN ghcr.io/stufently/yandex-metrica-mcp:latest
 ```
 
-> The first npm release has not been cut yet, so this command does not work today.
-> Until it is published, use Docker or the source install.
+`-e YANDEX_METRICA_TOKEN` without a value forwards the variable from the client's
+environment into the container, so the token lives in the client's `env` block and never
+appears in the `docker` command line or `ps` output. The client pulls the image on
+first start; `docker pull ghcr.io/stufently/yandex-metrica-mcp:latest` up front just
+makes that first start faster.
 
-### 3. From source
+Smoke test without a real token — the server must answer `initialize` and list 13 tools:
+
+```bash
+printf '%s\n' \
+  '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"smoke","version":"0"}}}' \
+  '{"jsonrpc":"2.0","method":"notifications/initialized"}' \
+  '{"jsonrpc":"2.0","id":2,"method":"tools/list"}' \
+  | YANDEX_METRICA_TOKEN=placeholder docker run -i --rm -e YANDEX_METRICA_TOKEN \
+    ghcr.io/stufently/yandex-metrica-mcp:latest
+```
+
+Image tags on GHCR: `latest` and `main` (every push to `main`), `sha-<short>`, and
+`X.Y.Z` / `X.Y` / `X` on version tags. Pin a version tag (`:0.2.0`) for reproducible setups.
+
+### npm (not published yet)
+
+The package is **scoped** — both unscoped names (`yandex-metrica-mcp` and the project's
+former name `mcp-yandex-metrica`) belong to unrelated projects on npm — so it ships as
+`@stufently/yandex-metrica-mcp` (command `yandex-metrica-mcp`). The first npm release
+has not been cut, so `npx -y @stufently/yandex-metrica-mcp` does **not** work today. Use
+Docker.
+
+### From source
 
 ```bash
 git clone https://github.com/stufently/yandex-metrica-mcp.git
 cd yandex-metrica-mcp
 npm install && npm run build
 ```
+
+See [Running from a local build](#running-from-a-local-build-instead-of-docker) for the
+client config.
 
 ---
 
@@ -234,59 +248,47 @@ docker-compose run --rm yandex-metrica-mcp
 
 ## Client Configuration
 
-All configs below are copy-paste ready. Replace `your_oauth_token_here` with your
-Yandex OAuth token and nothing else.
-
-The Docker variant needs no Node.js and no clone — the image is rebuilt and pushed to
-GHCR on every push to `main`.
+All configs below are copy-paste ready and use the Docker command from
+[Installation](#installation). Replace `your_oauth_token_here` with your Yandex OAuth
+token and nothing else.
 
 ### Claude Code
 
-Fastest path — `claude mcp add`:
-
 ```bash
 claude mcp add yandex-metrica \
-  --transport stdio \
-  -- docker run -i --rm \
   -e YANDEX_METRICA_TOKEN=your_oauth_token_here \
-  ghcr.io/stufently/yandex-metrica-mcp:latest
+  -- docker run -i --rm -e YANDEX_METRICA_TOKEN ghcr.io/stufently/yandex-metrica-mcp:latest
 ```
 
-Or edit a config file by hand — `~/.claude.json` for global scope, or `.mcp.json` in
-the project root for project scope (checked into git):
+Add `--scope user` to make it available in every project, or `--scope project` to write
+it to `.mcp.json` in the repo root. Check with `claude mcp list` / `claude mcp get yandex-metrica`.
 
-```json
-{
-  "mcpServers": {
-    "yandex-metrica": {
-      "command": "docker",
-      "args": [
-        "run",
-        "-i",
-        "--rm",
-        "-e",
-        "YANDEX_METRICA_TOKEN=your_oauth_token_here",
-        "ghcr.io/stufently/yandex-metrica-mcp:latest"
-      ]
-    }
-  }
-}
-```
-
-Verify:
+### Codex CLI
 
 ```bash
-claude mcp list                 # should show yandex-metrica
-claude mcp get yandex-metrica   # shows full config
+codex mcp add yandex-metrica \
+  --env YANDEX_METRICA_TOKEN=your_oauth_token_here \
+  -- docker run -i --rm -e YANDEX_METRICA_TOKEN ghcr.io/stufently/yandex-metrica-mcp:latest
 ```
 
-### Claude Desktop
+Or by hand in `~/.codex/config.toml` (shared by the Codex CLI, IDE extension and desktop app):
 
-Edit `claude_desktop_config.json`:
+```toml
+[mcp_servers.yandex-metrica]
+command = "docker"
+args = ["run", "-i", "--rm", "-e", "YANDEX_METRICA_TOKEN", "ghcr.io/stufently/yandex-metrica-mcp:latest"]
+env = { YANDEX_METRICA_TOKEN = "your_oauth_token_here" }
+```
 
-- macOS — `~/Library/Application Support/Claude/claude_desktop_config.json`
-- Windows — `%APPDATA%\Claude\claude_desktop_config.json`
-- Linux — `~/.config/Claude/claude_desktop_config.json`
+### Claude Desktop, Cursor, Windsurf
+
+These three share one `mcpServers` format — only the file differs:
+
+| Client         | Config file                                                                                                                                                                                        |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Claude Desktop | `claude_desktop_config.json`: macOS `~/Library/Application Support/Claude/`, Windows `%APPDATA%\Claude\`, Linux `~/.config/Claude/`. Restart the app after saving.                                 |
+| Cursor         | `~/.cursor/mcp.json` (all projects) or `.cursor/mcp.json` (one project)                                                                                                                            |
+| Windsurf       | `~/.codeium/windsurf/mcp_config.json`; after the rename to Devin Desktop — `~/.config/devin/mcp_config.json` (Windows `%APPDATA%\devin\mcp_config.json`). Cascade → `...` → _Open MCP config file_ |
 
 ```json
 {
@@ -298,23 +300,26 @@ Edit `claude_desktop_config.json`:
         "-i",
         "--rm",
         "-e",
-        "YANDEX_METRICA_TOKEN=your_oauth_token_here",
+        "YANDEX_METRICA_TOKEN",
         "ghcr.io/stufently/yandex-metrica-mcp:latest"
-      ]
+      ],
+      "env": {
+        "YANDEX_METRICA_TOKEN": "your_oauth_token_here"
+      }
     }
   }
 }
 ```
 
-Restart Claude Desktop after saving.
+The same block works in a project-scoped `.mcp.json` for Claude Code.
 
-### Cursor
+### Zed
 
-Edit `~/.cursor/mcp.json` for all projects, or `.cursor/mcp.json` inside a project:
+In Zed's `settings.json` (`zed: open settings file`), under `context_servers`:
 
 ```json
 {
-  "mcpServers": {
+  "context_servers": {
     "yandex-metrica": {
       "command": "docker",
       "args": [
@@ -322,9 +327,12 @@ Edit `~/.cursor/mcp.json` for all projects, or `.cursor/mcp.json` inside a proje
         "-i",
         "--rm",
         "-e",
-        "YANDEX_METRICA_TOKEN=your_oauth_token_here",
+        "YANDEX_METRICA_TOKEN",
         "ghcr.io/stufently/yandex-metrica-mcp:latest"
-      ]
+      ],
+      "env": {
+        "YANDEX_METRICA_TOKEN": "your_oauth_token_here"
+      }
     }
   }
 }
@@ -332,7 +340,7 @@ Edit `~/.cursor/mcp.json` for all projects, or `.cursor/mcp.json` inside a proje
 
 ### Running from a local build instead of Docker
 
-Works in any of the three clients — swap the `command`/`args` for:
+Works in any client above — swap `command`/`args` for:
 
 ```json
 {
@@ -352,7 +360,6 @@ In Claude Code the same thing via CLI:
 
 ```bash
 claude mcp add yandex-metrica \
-  --transport stdio \
   -e YANDEX_METRICA_TOKEN=your_oauth_token_here \
   -- node /absolute/path/to/yandex-metrica-mcp/dist/index.js
 ```
@@ -463,7 +470,10 @@ npm run test:live
 GitHub Actions workflows are in `.github/workflows/`:
 
 - `ci.yml` — lint, typecheck, test, build on every push/PR
-- `docker.yml` — build Docker image; push to GHCR on pushes to `main` and version tags
+- `docker.yml` — build Docker image; push to GHCR on pushes to `main` and version tags;
+  on a `vX.Y.Z` tag, also publish `server.json` to the
+  [official MCP Registry](https://registry.modelcontextprotocol.io) as
+  `io.github.stufently/yandex-metrica-mcp` (GitHub OIDC, no stored secret)
 
 Image tags produced by `docker.yml`:
 
