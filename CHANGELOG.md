@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- Desktop extension (`.mcpb`) for Claude Desktop. `scripts/build-mcpb.sh` packs it,
+  and `.github/workflows/mcpb.yml` attaches the bundle to the GitHub Release of a
+  `vX.Y.Z` tag. Nothing is published to npm, PyPI, GHCR, or the MCP registry by that
+  workflow.
+
+### Changed
+
+- Every tool description now says when to call the tool (and when to call a neighbor
+  instead). Each tool sets `readOnlyHint`, `destructiveHint`, `openWorldHint`, and
+  `idempotentHint`.
+- README: separate JSON config for Claude Code, Claude Desktop, Cursor, Windsurf, and
+  Zed, all on the same Docker command, plus an Example prompts list.
+
 ## [0.2.1] - 2026-10-09
 
 ### Added

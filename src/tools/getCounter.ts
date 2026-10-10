@@ -9,8 +9,15 @@ export function registerGetCounter(server: McpServer, config: Config): void {
     "yandex_metrica_get_counter",
     {
       description:
-        "Get detailed information about a specific Yandex Metrica counter by its ID. " +
-        "Returns counter settings, status, owner, timezone, and configuration.",
+        "Get one Yandex Metrica counter by id, including its settings, status, owner, timezone, and site. " +
+        "Use when the user already has a counter id and wants that counter's configuration. " +
+        "Do not use this to discover unknown ids; call yandex_metrica_list_counters instead.",
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: true,
+      },
       inputSchema: getCounterSchema.shape,
     },
     async (args) => {

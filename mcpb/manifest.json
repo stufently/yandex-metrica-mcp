@@ -1,0 +1,99 @@
+{
+  "manifest_version": "0.3",
+  "name": "yandex-metrica-mcp",
+  "display_name": "Yandex Metrica",
+  "description": "Query Yandex Metrica reports and raw logs, and manage counters, from an MCP client.",
+  "long_description": "Reads aggregated Yandex Metrica reports and exports raw visits or hits through the Logs API. It can also list, create, and permanently delete counters. The host runs the bundled server with Node.js 24 or newer. A Yandex OAuth token is required: metrika:read for reports and logs, and metrika:write for creating or deleting counters and for Logs API changes.",
+  "author": {
+    "name": "stufently"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stufently/yandex-metrica-mcp.git"
+  },
+  "homepage": "https://github.com/stufently/yandex-metrica-mcp",
+  "support": "https://github.com/stufently/yandex-metrica-mcp/issues",
+  "license": "MIT",
+  "keywords": ["mcp", "yandex-metrica", "analytics", "model-context-protocol", "claude"],
+  "privacy_policies": ["https://yandex.com/legal/confidential/"],
+  "compatibility": {
+    "platforms": ["darwin", "win32", "linux"],
+    "runtimes": {
+      "node": ">=24"
+    }
+  },
+  "server": {
+    "type": "node",
+    "entry_point": "dist/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/dist/index.js"],
+      "env": {
+        "YANDEX_METRICA_TOKEN": "${user_config.token}"
+      }
+    }
+  },
+  "user_config": {
+    "token": {
+      "type": "string",
+      "title": "Yandex OAuth token",
+      "description": "OAuth token sent as YANDEX_METRICA_TOKEN. metrika:read covers reports and logs; metrika:write is required to create or delete counters and to change Logs API requests.",
+      "sensitive": true,
+      "required": true
+    }
+  },
+  "tools": [
+    {
+      "name": "yandex_metrica_list_counters",
+      "description": "List Yandex Metrica counters the configured token can access, with each counter id, name, and site. Use when the user needs a counter id before any other query. Do not use this to read one counter's settings; call yandex_metrica_get_counter once the id is known."
+    },
+    {
+      "name": "yandex_metrica_get_counter",
+      "description": "Get one Yandex Metrica counter by id, including its settings, status, owner, timezone, and site. Use when the user already has a counter id and wants that counter's configuration. Do not use this to discover unknown ids; call yandex_metrica_list_counters instead."
+    },
+    {
+      "name": "yandex_metrica_list_goals",
+      "description": "List conversion goals configured on one Yandex Metrica counter, including each goal id and type. Use when the user asks which goals exist on a counter before building a report. Do not use this for conversion counts or rates; call yandex_metrica_get_report with the goal metrics."
+    },
+    {
+      "name": "yandex_metrica_get_report",
+      "description": "Run a Yandex Metrica Reporting API query and return aggregated statistics such as visits, users, bounce rate, and traffic sources. Use when the user wants a summary, a breakdown, or a comparison of two periods via date1_b and date2_b. Do not use this for row-level visits or pageviews; call yandex_metrica_evaluate_logs_request and the other Logs API tools. Metrics use the ym:s: prefix for visits and ym:pv: for hits."
+    },
+    {
+      "name": "yandex_metrica_evaluate_logs_request",
+      "description": "Check whether a Yandex Metrica Logs API export can be created for the given dates, source, and fields, without creating a request. Use when the user wants to know if a raw export is possible and how many days fit the quota. Do not use this to start the export; call yandex_metrica_create_logs_request after the check succeeds."
+    },
+    {
+      "name": "yandex_metrica_create_logs_request",
+      "description": "Create an asynchronous Yandex Metrica Logs API export of raw visits or hits for one counter and date range. Use when the user wants row-level data and yandex_metrica_evaluate_logs_request has shown the export is possible. Do not use this only to test feasibility, and do not use it for aggregated totals; call yandex_metrica_get_report for those. Poll yandex_metrica_get_logs_request until the status is processed. date2 cannot be today. Fields use the ym:s: prefix for visits and ym:pv: for hits."
+    },
+    {
+      "name": "yandex_metrica_list_logs_requests",
+      "description": "List every Logs API export request on a Yandex Metrica counter, in any status from created through cleaned. Use when the user wants to see existing exports or find a request id. Do not use this to poll a single request; call yandex_metrica_get_logs_request with that request id."
+    },
+    {
+      "name": "yandex_metrica_get_logs_request",
+      "description": "Get the status and prepared parts of one Yandex Metrica Logs API export request. Use when the user is waiting for a created export to reach processed before downloading it. Do not use this to fetch the TSV rows; call yandex_metrica_download_logs_part once the status is processed. Do not use it to list every request; call yandex_metrica_list_logs_requests."
+    },
+    {
+      "name": "yandex_metrica_download_logs_part",
+      "description": "Download one processed part of a Yandex Metrica Logs API export as TSV text. Use when the user wants the rows of a request whose status is already processed. Do not use this to check whether the export is ready; call yandex_metrica_get_logs_request first. Preview mode returns about the first 50KB; full mode is only for small parts under 10MB. Part numbers come from log_request_parts and start at 0."
+    },
+    {
+      "name": "yandex_metrica_cancel_logs_request",
+      "description": "Cancel a Yandex Metrica Logs API export that is still pending, in status created or awaiting_retry. Use when the user wants to stop an export that has not been processed yet. Do not use this on a processed request; call yandex_metrica_clean_logs_request to delete the prepared files."
+    },
+    {
+      "name": "yandex_metrica_clean_logs_request",
+      "description": "Delete the prepared files of a processed Yandex Metrica Logs API export and free the export quota. Use when the user has finished downloading and the request status is processed. Do not use this to stop a request that is still pending; call yandex_metrica_cancel_logs_request instead."
+    },
+    {
+      "name": "yandex_metrica_create_counter",
+      "description": "Create a new Yandex Metrica counter for a site and return its id and tracking code. Use when the user asks to add a website or start tracking a new property. Do not use this to find a counter that already exists; call yandex_metrica_list_counters or yandex_metrica_get_counter."
+    },
+    {
+      "name": "yandex_metrica_delete_counter",
+      "description": "Permanently delete one Yandex Metrica counter and all data stored on it. Use when the user explicitly asks to remove a counter and accepts that the deletion cannot be undone. Do not use this to inspect a counter; call yandex_metrica_get_counter instead."
+    }
+  ]
+}

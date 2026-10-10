@@ -9,8 +9,15 @@ export function registerListLogsRequests(server: McpServer, config: Config): voi
     "yandex_metrica_list_logs_requests",
     {
       description:
-        "List all Logs API export requests for a counter. " +
-        "Returns all requests regardless of status: created, awaiting_retry, processed, canceled, cleaned_by_user, cleaned_automatically_as_too_old.",
+        "List every Logs API export request on a Yandex Metrica counter, in any status from created through cleaned. " +
+        "Use when the user wants to see existing exports or find a request id. " +
+        "Do not use this to poll a single request; call yandex_metrica_get_logs_request with that request id.",
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: true,
+      },
       inputSchema: listLogsRequestsSchema.shape,
     },
     async (args) => {

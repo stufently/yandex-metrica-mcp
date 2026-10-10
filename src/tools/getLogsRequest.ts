@@ -9,11 +9,16 @@ export function registerGetLogsRequest(server: McpServer, config: Config): void 
     "yandex_metrica_get_logs_request",
     {
       description:
-        "Get the status and details of a specific Logs API export request. " +
-        "Poll this until status='processed' before downloading parts. " +
-        "Once processed, the response includes log_request_parts with part numbers and sizes. " +
-        "Status lifecycle: created → awaiting_retry → processed (or canceled). " +
-        "After download, use yandex_metrica_clean_logs_request to free up quota.",
+        "Get the status and prepared parts of one Yandex Metrica Logs API export request. " +
+        "Use when the user is waiting for a created export to reach processed before downloading it. " +
+        "Do not use this to fetch the TSV rows; call yandex_metrica_download_logs_part once the status is processed. " +
+        "Do not use it to list every request; call yandex_metrica_list_logs_requests.",
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: true,
+      },
       inputSchema: getLogsRequestSchema.shape,
     },
     async (args) => {

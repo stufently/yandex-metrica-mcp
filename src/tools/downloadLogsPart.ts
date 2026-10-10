@@ -56,13 +56,17 @@ export function registerDownloadLogsPart(server: McpServer, config: Config): voi
     "yandex_metrica_download_logs_part",
     {
       description:
-        "Download a specific part of a processed Logs API export request. " +
-        "Returns TSV (tab-separated) data with a header row. " +
-        "IMPORTANT: Parts can be very large (hundreds of MB). " +
-        "mode='preview' (default): reads first ~50KB via streaming — safe for any size. " +
-        "mode='full': reads up to 10MB; if part exceeds that, an error is returned — use only for small parts. " +
-        "Part numbers are 0-based and listed in log_request_parts of the request status. " +
-        "Only available when request status='processed'.",
+        "Download one processed part of a Yandex Metrica Logs API export as TSV text. " +
+        "Use when the user wants the rows of a request whose status is already processed. " +
+        "Do not use this to check whether the export is ready; call yandex_metrica_get_logs_request first. " +
+        "Preview mode returns about the first 50KB; full mode is only for small parts under 10MB. " +
+        "Part numbers come from log_request_parts and start at 0.",
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: true,
+      },
       inputSchema: downloadLogsPartSchema.shape,
     },
     async (args) => {

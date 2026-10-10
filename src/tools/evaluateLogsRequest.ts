@@ -10,10 +10,15 @@ export function registerEvaluateLogsRequest(server: McpServer, config: Config): 
     "yandex_metrica_evaluate_logs_request",
     {
       description:
-        "Check whether a Logs API export request can be created for the given parameters. " +
-        "Returns whether the request is possible and the maximum number of days that can be exported. " +
-        "Call this before yandex_metrica_create_logs_request to avoid creating requests that will fail. " +
-        "Workflow: evaluate → create → poll with get_logs_request → download parts → clean.",
+        "Check whether a Yandex Metrica Logs API export can be created for the given dates, source, and fields, without creating a request. " +
+        "Use when the user wants to know if a raw export is possible and how many days fit the quota. " +
+        "Do not use this to start the export; call yandex_metrica_create_logs_request after the check succeeds.",
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: true,
+      },
       inputSchema: evaluateLogsRequestSchema.shape,
     },
     async (args) => {

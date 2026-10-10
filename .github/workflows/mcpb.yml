@@ -1,0 +1,33 @@
+name: MCPB release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  mcpb:
+    name: Build and upload .mcpb
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Build Desktop extension
+        run: bash scripts/build-mcpb.sh
+
+      - name: Create GitHub release if missing
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if ! gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release create "$GITHUB_REF_NAME" --verify-tag --notes "Release $GITHUB_REF_NAME"
+          fi
+
+      - name: Upload .mcpb asset
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload "$GITHUB_REF_NAME" dist-mcpb/*.mcpb --clobber

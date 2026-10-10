@@ -9,9 +9,15 @@ export function registerCancelLogsRequest(server: McpServer, config: Config): vo
     "yandex_metrica_cancel_logs_request",
     {
       description:
-        "Cancel a pending Logs API export request. " +
-        "Only works on requests with status='created' or 'awaiting_retry'. " +
-        "Cannot cancel already processed or cleaned requests.",
+        "Cancel a Yandex Metrica Logs API export that is still pending, in status created or awaiting_retry. " +
+        "Use when the user wants to stop an export that has not been processed yet. " +
+        "Do not use this on a processed request; call yandex_metrica_clean_logs_request to delete the prepared files.",
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: true,
+        idempotentHint: true,
+        openWorldHint: true,
+      },
       inputSchema: cancelLogsRequestSchema.shape,
     },
     async (args) => {

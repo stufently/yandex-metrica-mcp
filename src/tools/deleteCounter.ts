@@ -9,8 +9,15 @@ export function registerDeleteCounter(server: McpServer, config: Config): void {
     "yandex_metrica_delete_counter",
     {
       description:
-        "Delete a Yandex Metrica counter. This action is irreversible — " +
-        "the counter and all its data will be permanently removed.",
+        "Permanently delete one Yandex Metrica counter and all data stored on it. " +
+        "Use when the user explicitly asks to remove a counter and accepts that the deletion cannot be undone. " +
+        "Do not use this to inspect a counter; call yandex_metrica_get_counter instead.",
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: true,
+        idempotentHint: true,
+        openWorldHint: true,
+      },
       inputSchema: deleteCounterSchema.shape,
     },
     async (args) => {
