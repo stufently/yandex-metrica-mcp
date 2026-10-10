@@ -9,8 +9,15 @@ export function registerCreateCounter(server: McpServer, config: Config): void {
     "yandex_metrica_create_counter",
     {
       description:
-        "Create a new Yandex Metrica counter (add a site for tracking). " +
-        "Returns the created counter with its ID and tracking code.",
+        "Create a new Yandex Metrica counter for a site and return its id and tracking code. " +
+        "Use when the user asks to add a website or start tracking a new property. " +
+        "Do not use this to find a counter that already exists; call yandex_metrica_list_counters or yandex_metrica_get_counter.",
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: false,
+        idempotentHint: false,
+        openWorldHint: true,
+      },
       inputSchema: createCounterSchema.shape,
     },
     async (args) => {

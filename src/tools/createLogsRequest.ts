@@ -10,11 +10,17 @@ export function registerCreateLogsRequest(server: McpServer, config: Config): vo
     "yandex_metrica_create_logs_request",
     {
       description:
-        "Create a Yandex Metrica Logs API export request for raw non-aggregated data. " +
-        "The request is processed asynchronously — poll status with yandex_metrica_get_logs_request until status='processed', " +
-        "then download parts with yandex_metrica_download_logs_part, then clean with yandex_metrica_clean_logs_request. " +
-        "source='visits' exports session-level data; source='hits' exports pageview-level data. " +
-        "Note: date2 cannot be the current day. Fields must use the 'ym:s:' (visits) or 'ym:pv:' (hits) prefix.",
+        "Create an asynchronous Yandex Metrica Logs API export of raw visits or hits for one counter and date range. " +
+        "Use when the user wants row-level data and yandex_metrica_evaluate_logs_request has shown the export is possible. " +
+        "Do not use this only to test feasibility, and do not use it for aggregated totals; call yandex_metrica_get_report for those. " +
+        "Poll yandex_metrica_get_logs_request until the status is processed. date2 cannot be today. " +
+        "Fields use the ym:s: prefix for visits and ym:pv: for hits.",
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: false,
+        idempotentHint: false,
+        openWorldHint: true,
+      },
       inputSchema: createLogsRequestSchema.shape,
     },
     async (args) => {

@@ -9,8 +9,15 @@ export function registerListGoals(server: McpServer, config: Config): void {
     "yandex_metrica_list_goals",
     {
       description:
-        "List conversion goals configured for a Yandex Metrica counter. " +
-        "Goals are useful for filtering and segmenting Reporting API queries (e.g. metrics like ym:s:goal<ID>conversionRate).",
+        "List conversion goals configured on one Yandex Metrica counter, including each goal id and type. " +
+        "Use when the user asks which goals exist on a counter before building a report. " +
+        "Do not use this for conversion counts or rates; call yandex_metrica_get_report with the goal metrics.",
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: true,
+      },
       inputSchema: listGoalsSchema.shape,
     },
     async (args) => {

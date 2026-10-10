@@ -9,10 +9,15 @@ export function registerCleanLogsRequest(server: McpServer, config: Config): voi
     "yandex_metrica_clean_logs_request",
     {
       description:
-        "Clean (delete) the prepared log files for a processed Logs API export request. " +
-        "Call this after downloading all parts to free up your export quota. " +
-        "Only works on requests with status='processed'. " +
-        "After cleaning, status changes to 'cleaned_by_user'.",
+        "Delete the prepared files of a processed Yandex Metrica Logs API export and free the export quota. " +
+        "Use when the user has finished downloading and the request status is processed. " +
+        "Do not use this to stop a request that is still pending; call yandex_metrica_cancel_logs_request instead.",
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: true,
+        idempotentHint: true,
+        openWorldHint: true,
+      },
       inputSchema: cleanLogsRequestSchema.shape,
     },
     async (args) => {

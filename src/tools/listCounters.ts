@@ -9,8 +9,15 @@ export function registerListCounters(server: McpServer, config: Config): void {
     "yandex_metrica_list_counters",
     {
       description:
-        "List all Yandex Metrica counters (tags/properties) accessible with the configured token. " +
-        "Use this to discover available counter IDs before querying reports or logs.",
+        "List Yandex Metrica counters the configured token can access, with each counter id, name, and site. " +
+        "Use when the user needs a counter id before any other query. " +
+        "Do not use this to read one counter's settings; call yandex_metrica_get_counter once the id is known.",
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: true,
+      },
       inputSchema: listCountersSchema.shape,
     },
     async (args) => {

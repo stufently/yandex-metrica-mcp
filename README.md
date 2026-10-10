@@ -123,12 +123,12 @@ The counter ID is the numeric ID of your Yandex Metrica tag (счётчик):
 
 ## Installation
 
-**One path that works today: Docker.** Nothing to clone, no Node.js. Every MCP client
-below starts the server with the same command:
-
 ```bash
 docker run -i --rm -e YANDEX_METRICA_TOKEN ghcr.io/stufently/yandex-metrica-mcp:latest
 ```
+
+**One path that works today: Docker.** Nothing to clone, no Node.js. Every MCP client
+below starts the server with this same command.
 
 `-e YANDEX_METRICA_TOKEN` without a value forwards the variable from the client's
 environment into the container, so the token lives in the client's `env` block and never
@@ -254,6 +254,8 @@ token and nothing else.
 
 ### Claude Code
 
+Project file: `.mcp.json` in the project root.
+
 ```bash
 claude mcp add yandex-metrica \
   -e YANDEX_METRICA_TOKEN=your_oauth_token_here \
@@ -261,34 +263,9 @@ claude mcp add yandex-metrica \
 ```
 
 Add `--scope user` to make it available in every project, or `--scope project` to write
-it to `.mcp.json` in the repo root. Check with `claude mcp list` / `claude mcp get yandex-metrica`.
+`.mcp.json`. Check with `claude mcp list` / `claude mcp get yandex-metrica`.
 
-### Codex CLI
-
-```bash
-codex mcp add yandex-metrica \
-  --env YANDEX_METRICA_TOKEN=your_oauth_token_here \
-  -- docker run -i --rm -e YANDEX_METRICA_TOKEN ghcr.io/stufently/yandex-metrica-mcp:latest
-```
-
-Or by hand in `~/.codex/config.toml` (shared by the Codex CLI, IDE extension and desktop app):
-
-```toml
-[mcp_servers.yandex-metrica]
-command = "docker"
-args = ["run", "-i", "--rm", "-e", "YANDEX_METRICA_TOKEN", "ghcr.io/stufently/yandex-metrica-mcp:latest"]
-env = { YANDEX_METRICA_TOKEN = "your_oauth_token_here" }
-```
-
-### Claude Desktop, Cursor, Windsurf
-
-These three share one `mcpServers` format — only the file differs:
-
-| Client         | Config file                                                                                                                                                                                        |
-| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Claude Desktop | `claude_desktop_config.json`: macOS `~/Library/Application Support/Claude/`, Windows `%APPDATA%\Claude\`, Linux `~/.config/Claude/`. Restart the app after saving.                                 |
-| Cursor         | `~/.cursor/mcp.json` (all projects) or `.cursor/mcp.json` (one project)                                                                                                                            |
-| Windsurf       | `~/.codeium/windsurf/mcp_config.json`; after the rename to Devin Desktop — `~/.config/devin/mcp_config.json` (Windows `%APPDATA%\devin\mcp_config.json`). Cascade → `...` → _Open MCP config file_ |
+The same server as JSON in `.mcp.json`:
 
 ```json
 {
@@ -311,11 +288,112 @@ These three share one `mcpServers` format — only the file differs:
 }
 ```
 
-The same block works in a project-scoped `.mcp.json` for Claude Code.
+### Claude Desktop
+
+Config file `claude_desktop_config.json`: macOS
+`~/Library/Application Support/Claude/`, Windows `%APPDATA%\Claude\`, Linux
+`~/.config/Claude/`. Restart the app after saving.
+
+```json
+{
+  "mcpServers": {
+    "yandex-metrica": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "YANDEX_METRICA_TOKEN",
+        "ghcr.io/stufently/yandex-metrica-mcp:latest"
+      ],
+      "env": {
+        "YANDEX_METRICA_TOKEN": "your_oauth_token_here"
+      }
+    }
+  }
+}
+```
+
+Claude Desktop can also install this server in one click from a `.mcpb` file. Releases
+up to v0.2.0 do not include one yet; the bundle is attached starting with the next
+tagged release at https://github.com/stufently/yandex-metrica-mcp/releases/latest.
+Until then, build it locally with `bash scripts/build-mcpb.sh` (needs Docker) and open
+`dist-mcpb/yandex-metrica-mcp-<version>.mcpb`.
+
+### Cursor
+
+`~/.cursor/mcp.json` for every project, or `.cursor/mcp.json` for one project.
+
+```json
+{
+  "mcpServers": {
+    "yandex-metrica": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "YANDEX_METRICA_TOKEN",
+        "ghcr.io/stufently/yandex-metrica-mcp:latest"
+      ],
+      "env": {
+        "YANDEX_METRICA_TOKEN": "your_oauth_token_here"
+      }
+    }
+  }
+}
+```
+
+### Windsurf
+
+File `mcp_config.json`. On macOS and Linux:
+`~/.config/devin/mcp_config.json` (or `$XDG_CONFIG_HOME/devin/mcp_config.json`). On
+Windows: `%APPDATA%\devin\mcp_config.json`. Older builds used
+`~/.codeium/windsurf/mcp_config.json`.
+
+```json
+{
+  "mcpServers": {
+    "yandex-metrica": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "YANDEX_METRICA_TOKEN",
+        "ghcr.io/stufently/yandex-metrica-mcp:latest"
+      ],
+      "env": {
+        "YANDEX_METRICA_TOKEN": "your_oauth_token_here"
+      }
+    }
+  }
+}
+```
+
+### Codex CLI
+
+```bash
+codex mcp add yandex-metrica \
+  --env YANDEX_METRICA_TOKEN=your_oauth_token_here \
+  -- docker run -i --rm -e YANDEX_METRICA_TOKEN ghcr.io/stufently/yandex-metrica-mcp:latest
+```
+
+Or by hand in `~/.codex/config.toml` (shared by the Codex CLI, IDE extension and desktop app):
+
+```toml
+[mcp_servers.yandex-metrica]
+command = "docker"
+args = ["run", "-i", "--rm", "-e", "YANDEX_METRICA_TOKEN", "ghcr.io/stufently/yandex-metrica-mcp:latest"]
+env = { YANDEX_METRICA_TOKEN = "your_oauth_token_here" }
+```
 
 ### Zed
 
-In Zed's `settings.json` (`zed: open settings file`), under `context_servers`:
+Zed's `settings.json` (`zed: open settings file`), under `context_servers`:
 
 ```json
 {
@@ -365,6 +443,14 @@ claude mcp add yandex-metrica \
 ```
 
 ---
+
+## Example prompts
+
+- Why did my site lose visits last week?
+- Which traffic sources sent the most visits last month?
+- What goals are configured on my main counter?
+- Compare this month's visits with the same month last year.
+- Export raw visits for the first week of January and show a preview.
 
 ## Common prompts
 
@@ -474,6 +560,8 @@ GitHub Actions workflows are in `.github/workflows/`:
   on a `vX.Y.Z` tag, also publish `server.json` to the
   [official MCP Registry](https://registry.modelcontextprotocol.io) as
   `io.github.stufently/yandex-metrica-mcp` (GitHub OIDC, no stored secret)
+- `mcpb.yml` — on a `vX.Y.Z` tag, build the `.mcpb` Desktop extension and attach it
+  to that GitHub Release. It does not publish to GHCR, npm, PyPI, or the MCP registry.
 
 Image tags produced by `docker.yml`:
 

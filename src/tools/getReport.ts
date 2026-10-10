@@ -10,13 +10,16 @@ export function registerGetReport(server: McpServer, config: Config): void {
     "yandex_metrica_get_report",
     {
       description:
-        "Execute a Yandex Metrica Reporting API query and return aggregated statistics. " +
-        "Use this for standard analytics: visits, pageviews, bounce rate, traffic sources, etc. " +
-        "Metrics and dimensions use 'ym:s:' prefix for visits (sessions) and 'ym:pv:' for hits. " +
-        "For period comparison, provide date1_b and date2_b — the tool automatically uses the " +
-        "comparison endpoint (/stat/v1/data/comparison), where date1/date2 = segment A and " +
-        "date1_b/date2_b = segment B. Each result row returns two sets of metrics. " +
-        "Note: Reporting API returns aggregated/sampled data; use Logs API tools for raw non-aggregated export.",
+        "Run a Yandex Metrica Reporting API query and return aggregated statistics such as visits, users, bounce rate, and traffic sources. " +
+        "Use when the user wants a summary, a breakdown, or a comparison of two periods via date1_b and date2_b. " +
+        "Do not use this for row-level visits or pageviews; call yandex_metrica_evaluate_logs_request and the other Logs API tools. " +
+        "Metrics use the ym:s: prefix for visits and ym:pv: for hits.",
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: true,
+      },
       inputSchema: getReportSchema.shape,
     },
     async (args) => {
