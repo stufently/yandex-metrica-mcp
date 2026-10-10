@@ -126,6 +126,7 @@ export type LogRequestStatus =
   | "created"
   | "awaiting_retry"
   | "processed"
+  | "processing_failed"
   | "canceled"
   | "cleaned_by_user"
   | "cleaned_automatically_as_too_old";
@@ -147,7 +148,7 @@ export interface LogRequest {
   status: LogRequestStatus;
   size?: number;
   attribution?: string;
-  log_request_parts?: LogRequestPart[];
+  parts?: LogRequestPart[];
 }
 
 export interface LogRequestResponse {

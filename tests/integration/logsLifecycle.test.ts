@@ -136,3 +136,84 @@ describe("Logs API lifecycle (mocked)", () => {
     expect(url).toContain("/clean");
   });
 });
+
+describe("Logs API log_request.parts (documented response shape)", () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  const getRequest = (logRequest: Record<string, unknown>) => {
+    mockFetch({ log_request: logRequest });
+    return createLogsClient(testConfig()).getLogsRequest({
+      counter_id: FIXTURE_COUNTER_ID,
+      request_id: FIXTURE_REQUEST_ID,
+    });
+  };
+
+  it("returns every part from log_request.parts with part_number and size", async () => {
+    const result = await getRequest({
+      ...fixtureLogRequestResponse.log_request,
+      size: 3072,
+      parts: [
+        { part_number: 0, size: 2048 },
+        { part_number: 1, size: 1024 },
+      ],
+    });
+    expect(result.log_request.parts).toEqual([
+      { part_number: 0, size: 2048 },
+      { part_number: 1, size: 1024 },
+    ]);
+    expect(result.log_request.size).toBe(3072);
+  });
+
+  it("accepts a request that has no parts yet", async () => {
+    const created: Record<string, unknown> = {
+      ...fixtureLogRequestResponse.log_request,
+      status: "created",
+    };
+    delete created.parts;
+    delete created.size;
+    const result = await getRequest(created);
+    expect(result.log_request.status).toBe("created");
+    expect(result.log_request.parts).toBeUndefined();
+  });
+
+  it("rejects parts whose part_number is not a number", async () => {
+    await expect(
+      getRequest({
+        ...fixtureLogRequestResponse.log_request,
+        parts: [{ part_number: "0", size: 1024 }],
+      }),
+    ).rejects.toThrow(/log_request\.parts\.0\.part_number/);
+  });
+
+  it("rejects parts without a size", async () => {
+    await expect(
+      getRequest({
+        ...fixtureLogRequestResponse.log_request,
+        parts: [{ part_number: 0 }],
+      }),
+    ).rejects.toThrow(/log_request\.parts\.0\.size/);
+  });
+
+  it("rejects parts that are not an array", async () => {
+    await expect(
+      getRequest({ ...fixtureLogRequestResponse.log_request, parts: { part_number: 0 } }),
+    ).rejects.toThrow(/log_request\.parts/);
+  });
+
+  it("rejects a non-numeric request size", async () => {
+    await expect(
+      getRequest({ ...fixtureLogRequestResponse.log_request, size: "1024" }),
+    ).rejects.toThrow(/log_request\.size/);
+  });
+
+  it("validates parts inside listLogsRequests too", async () => {
+    mockFetch({
+      requests: [
+        { ...fixtureLogRequestResponse.log_request, parts: [{ part_number: 0, size: "x" }] },
+      ],
+    });
+    await expect(
+      createLogsClient(testConfig()).listLogsRequests(FIXTURE_COUNTER_ID),
+    ).rejects.toThrow(/requests\.0\.parts\.0\.size/);
+  });
+});

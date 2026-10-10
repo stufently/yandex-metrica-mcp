@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+
+- Logs API: the parts of a processed export are now read from `log_request.parts`,
+  the field the Logs API actually returns, instead of the non-existent
+  `log_request_parts`. The response schema validates `parts` and `size`, the
+  `processing_failed` status is part of `LogRequestStatus`, and the README points
+  to the right field. Responses were passed through unchanged before, so
+  `get_logs_request` output already contained `parts`; only the types, schema,
+  fixtures, and the README instruction were wrong.
+
 ## [0.2.2] - 2026-10-10
 
 ### Added

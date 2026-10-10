@@ -90,7 +90,7 @@ export const fixtureLogRequest = {
   fields: ["ym:s:visitID", "ym:s:date", "ym:s:clientID"],
   status: "processed" as const,
   size: 1024,
-  log_request_parts: [{ part_number: 0, size: 1024 }],
+  parts: [{ part_number: 0, size: 1024 }],
 };
 
 export const fixtureLogRequestResponse: LogRequestResponse = {

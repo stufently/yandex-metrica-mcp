@@ -95,7 +95,8 @@ const logRequestSchema = z
     date2: z.string(),
     fields: z.array(z.string()),
     status: z.string(),
-    log_request_parts: z.array(logRequestPartSchema).optional(),
+    size: z.number().optional(),
+    parts: z.array(logRequestPartSchema).optional(),
   })
   .passthrough();
 

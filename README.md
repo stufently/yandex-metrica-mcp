@@ -70,7 +70,7 @@ This MCP server exposes both APIs as named tools that an LLM can call directly.
 evaluate → create → [poll get until status=processed] → download parts → clean
 ```
 
-The Logs API is asynchronous. After creating a request, poll `yandex_metrica_get_logs_request` until `status = "processed"`, then download each part listed in `log_request_parts`.
+The Logs API is asynchronous. After creating a request, poll `yandex_metrica_get_logs_request` until `status = "processed"`, then download each part listed in `log_request.parts` (by its `part_number`).
 
 ---
 
