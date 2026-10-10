@@ -5,7 +5,7 @@ const envSchema = z.object({
   YANDEX_METRICA_TIMEOUT_MS: z.coerce.number().int().positive().default(30000),
   YANDEX_METRICA_BASE_URL: z.string().url().default("https://api-metrika.yandex.net"),
   LOG_LEVEL: z.enum(["debug", "info", "warn", "error", "silent"]).default("info"),
-  YANDEX_METRICA_USER_AGENT: z.string().default("yandex-metrica-mcp/0.2.1"),
+  YANDEX_METRICA_USER_AGENT: z.string().default("yandex-metrica-mcp/0.2.2"),
 });
 
 export type Config = z.infer<typeof envSchema>;

@@ -9,11 +9,11 @@
     "id": "1182162579"
   },
   "websiteUrl": "https://github.com/stufently/yandex-metrica-mcp",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "packages": [
     {
       "registryType": "oci",
-      "identifier": "ghcr.io/stufently/yandex-metrica-mcp:0.2.1",
+      "identifier": "ghcr.io/stufently/yandex-metrica-mcp:0.2.2",
       "transport": {
         "type": "stdio"
       },
@@ -30,7 +30,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "@stufently/yandex-metrica-mcp",
-      "version": "0.2.1",
+      "version": "0.2.2",
       "transport": {
         "type": "stdio"
       },

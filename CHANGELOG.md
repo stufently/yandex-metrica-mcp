@@ -4,8 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.2.2] - 2026-10-10
+
 ### Added
 
+- `glama.json` in the repository root names the maintainer for the Glama
+  directory listing.
 - Desktop extension (`.mcpb`) for Claude Desktop. `scripts/build-mcpb.sh` packs it,
   and `.github/workflows/mcpb.yml` attaches the bundle to the GitHub Release of a
   `vX.Y.Z` tag. Nothing is published to npm, PyPI, GHCR, or the MCP registry by that
