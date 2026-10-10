@@ -1,0 +1,532 @@
+[
+ {
+  "name": "yandex_metrica_list_counters",
+  "inputSchema": {
+   "$schema": "http://json-schema.org/draft-07/schema#",
+   "type": "object",
+   "properties": {
+    "page": {
+     "description": "Page number (1-based)",
+     "type": "integer",
+     "minimum": 1,
+     "maximum": 9007199254740991
+    },
+    "per_page": {
+     "description": "Items per page (max 1000)",
+     "type": "integer",
+     "minimum": 1,
+     "maximum": 1000
+    },
+    "status": {
+     "description": "Filter by counter status",
+     "type": "string",
+     "enum": [
+      "Active",
+      "Deleted"
+     ]
+    },
+    "type": {
+     "description": "Filter by counter type",
+     "type": "string",
+     "enum": [
+      "simple",
+      "partner"
+     ]
+    },
+    "search": {
+     "description": "Search by counter name or site URL",
+     "type": "string"
+    },
+    "sort": {
+     "description": "Sort order",
+     "type": "string",
+     "enum": [
+      "Default",
+      "Id",
+      "Name",
+      "Site",
+      "Hits"
+     ]
+    }
+   }
+  }
+ },
+ {
+  "name": "yandex_metrica_get_counter",
+  "inputSchema": {
+   "$schema": "http://json-schema.org/draft-07/schema#",
+   "type": "object",
+   "properties": {
+    "counter_id": {
+     "type": "integer",
+     "exclusiveMinimum": 0,
+     "maximum": 9007199254740991,
+     "description": "Yandex Metrica counter (tag) ID"
+    }
+   },
+   "required": [
+    "counter_id"
+   ]
+  }
+ },
+ {
+  "name": "yandex_metrica_list_goals",
+  "inputSchema": {
+   "$schema": "http://json-schema.org/draft-07/schema#",
+   "type": "object",
+   "properties": {
+    "counter_id": {
+     "type": "integer",
+     "exclusiveMinimum": 0,
+     "maximum": 9007199254740991,
+     "description": "Yandex Metrica counter (tag) ID"
+    }
+   },
+   "required": [
+    "counter_id"
+   ]
+  }
+ },
+ {
+  "name": "yandex_metrica_get_report",
+  "inputSchema": {
+   "$schema": "http://json-schema.org/draft-07/schema#",
+   "type": "object",
+   "properties": {
+    "counter_ids": {
+     "minItems": 1,
+     "type": "array",
+     "items": {
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "maximum": 9007199254740991
+     },
+     "description": "One or more counter IDs to query"
+    },
+    "metrics": {
+     "minItems": 1,
+     "maxItems": 20,
+     "type": "array",
+     "items": {
+      "type": "string",
+      "minLength": 1
+     },
+     "description": "Metrics to include, e.g. ['ym:s:visits', 'ym:s:pageviews', 'ym:s:bounceRate']. Max 20."
+    },
+    "dimensions": {
+     "description": "Dimensions for grouping, e.g. ['ym:s:date', 'ym:s:regionCityName']",
+     "type": "array",
+     "items": {
+      "type": "string",
+      "minLength": 1
+     }
+    },
+    "date1": {
+     "description": "Start date (YYYY-MM-DD or 'today', 'yesterday', '7daysAgo'). Default: 7daysAgo",
+     "type": "string",
+     "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^(today|yesterday|\\d+daysAgo)$"
+    },
+    "date2": {
+     "description": "End date (YYYY-MM-DD or relative). Default: today",
+     "type": "string",
+     "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^(today|yesterday|\\d+daysAgo)$"
+    },
+    "filters": {
+     "description": "Filter expression, e.g. \"ym:s:trafficSourceName=='Organic Search'\"",
+     "type": "string"
+    },
+    "sort": {
+     "description": "Sort fields. Prefix with '-' for descending, e.g. ['-ym:s:visits', 'ym:s:date']",
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "limit": {
+     "description": "Rows to return (default 100)",
+     "type": "integer",
+     "minimum": 1,
+     "maximum": 100000
+    },
+    "offset": {
+     "description": "Row offset for pagination (1-based)",
+     "type": "integer",
+     "minimum": 1,
+     "maximum": 9007199254740991
+    },
+    "accuracy": {
+     "description": "Sampling accuracy (default: medium)",
+     "type": "string",
+     "enum": [
+      "low",
+      "medium",
+      "high",
+      "full"
+     ]
+    },
+    "currency": {
+     "description": "Currency code (ISO 4217), e.g. 'RUB'",
+     "type": "string",
+     "minLength": 3,
+     "maxLength": 3
+    },
+    "attribution": {
+     "description": "Attribution model for traffic source metrics. 'lastsign' = last significant source; 'automatic' = auto-attribution.",
+     "type": "string",
+     "enum": [
+      "first",
+      "last",
+      "lastsign",
+      "last_yandex_direct_click",
+      "cross_device_first",
+      "cross_device_last",
+      "cross_device_last_significant",
+      "cross_device_last_yandex_direct_click",
+      "automatic"
+     ]
+    },
+    "lang": {
+     "description": "Language for dimension value names (default: ru)",
+     "type": "string",
+     "enum": [
+      "ru",
+      "en",
+      "tr",
+      "uk"
+     ]
+    },
+    "include_undefined": {
+     "description": "Include rows with undefined dimension values",
+     "type": "boolean"
+    },
+    "preset": {
+     "description": "Preset report name (e.g. 'sources_summary'). Overrides metrics/dimensions.",
+     "type": "string"
+    },
+    "date1_b": {
+     "description": "Comparison segment B start date. When provided with date2_b, uses the comparison endpoint (/stat/v1/data/comparison). date1/date2 become segment A. Each row returns two sets of metrics.",
+     "type": "string",
+     "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^(today|yesterday|\\d+daysAgo)$"
+    },
+    "date2_b": {
+     "description": "Comparison segment B end date. Must be provided together with date1_b.",
+     "type": "string",
+     "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^(today|yesterday|\\d+daysAgo)$"
+    },
+    "filters_a": {
+     "description": "Segmentation filter for segment A only (comparison mode)",
+     "type": "string"
+    },
+    "filters_b": {
+     "description": "Segmentation filter for segment B only (comparison mode)",
+     "type": "string"
+    }
+   },
+   "required": [
+    "counter_ids",
+    "metrics"
+   ]
+  }
+ },
+ {
+  "name": "yandex_metrica_evaluate_logs_request",
+  "inputSchema": {
+   "$schema": "http://json-schema.org/draft-07/schema#",
+   "type": "object",
+   "properties": {
+    "counter_id": {
+     "type": "integer",
+     "exclusiveMinimum": 0,
+     "maximum": 9007199254740991,
+     "description": "Yandex Metrica counter (tag) ID"
+    },
+    "date1": {
+     "type": "string",
+     "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^(today|yesterday|\\d+daysAgo)$",
+     "description": "Start date YYYY-MM-DD"
+    },
+    "date2": {
+     "type": "string",
+     "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^(today|yesterday|\\d+daysAgo)$",
+     "description": "End date YYYY-MM-DD (cannot be current day)"
+    },
+    "source": {
+     "type": "string",
+     "enum": [
+      "hits",
+      "visits"
+     ],
+     "description": "'hits' for pageview-level data, 'visits' for session-level data"
+    },
+    "fields": {
+     "minItems": 1,
+     "type": "array",
+     "items": {
+      "type": "string",
+      "minLength": 1
+     },
+     "description": "Fields to export. For visits: ['ym:s:visitID','ym:s:date','ym:s:clientID',...]. For hits: ['ym:pv:watchID','ym:pv:date','ym:pv:URL',...]"
+    }
+   },
+   "required": [
+    "counter_id",
+    "date1",
+    "date2",
+    "source",
+    "fields"
+   ]
+  }
+ },
+ {
+  "name": "yandex_metrica_create_logs_request",
+  "inputSchema": {
+   "$schema": "http://json-schema.org/draft-07/schema#",
+   "type": "object",
+   "properties": {
+    "counter_id": {
+     "type": "integer",
+     "exclusiveMinimum": 0,
+     "maximum": 9007199254740991,
+     "description": "Yandex Metrica counter (tag) ID"
+    },
+    "date1": {
+     "type": "string",
+     "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^(today|yesterday|\\d+daysAgo)$",
+     "description": "Start date YYYY-MM-DD"
+    },
+    "date2": {
+     "type": "string",
+     "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^(today|yesterday|\\d+daysAgo)$",
+     "description": "End date YYYY-MM-DD (cannot be current day)"
+    },
+    "source": {
+     "type": "string",
+     "enum": [
+      "hits",
+      "visits"
+     ],
+     "description": "'hits' for pageview-level data, 'visits' for session-level data"
+    },
+    "fields": {
+     "minItems": 1,
+     "type": "array",
+     "items": {
+      "type": "string",
+      "minLength": 1
+     },
+     "description": "Fields to export. See Yandex Metrica Logs API documentation for full field lists."
+    },
+    "attribution": {
+     "description": "Attribution model for traffic source fields. Default: lastsign.",
+     "type": "string",
+     "enum": [
+      "first",
+      "last",
+      "lastsign",
+      "last_yandex_direct_click",
+      "cross_device_first",
+      "cross_device_last",
+      "cross_device_last_significant",
+      "cross_device_last_yandex_direct_click",
+      "automatic"
+     ]
+    }
+   },
+   "required": [
+    "counter_id",
+    "date1",
+    "date2",
+    "source",
+    "fields"
+   ]
+  }
+ },
+ {
+  "name": "yandex_metrica_list_logs_requests",
+  "inputSchema": {
+   "$schema": "http://json-schema.org/draft-07/schema#",
+   "type": "object",
+   "properties": {
+    "counter_id": {
+     "type": "integer",
+     "exclusiveMinimum": 0,
+     "maximum": 9007199254740991,
+     "description": "Yandex Metrica counter (tag) ID"
+    }
+   },
+   "required": [
+    "counter_id"
+   ]
+  }
+ },
+ {
+  "name": "yandex_metrica_get_logs_request",
+  "inputSchema": {
+   "$schema": "http://json-schema.org/draft-07/schema#",
+   "type": "object",
+   "properties": {
+    "counter_id": {
+     "type": "integer",
+     "exclusiveMinimum": 0,
+     "maximum": 9007199254740991,
+     "description": "Yandex Metrica counter (tag) ID"
+    },
+    "request_id": {
+     "type": "integer",
+     "exclusiveMinimum": 0,
+     "maximum": 9007199254740991,
+     "description": "Logs API request ID"
+    }
+   },
+   "required": [
+    "counter_id",
+    "request_id"
+   ]
+  }
+ },
+ {
+  "name": "yandex_metrica_download_logs_part",
+  "inputSchema": {
+   "$schema": "http://json-schema.org/draft-07/schema#",
+   "type": "object",
+   "properties": {
+    "counter_id": {
+     "type": "integer",
+     "exclusiveMinimum": 0,
+     "maximum": 9007199254740991,
+     "description": "Yandex Metrica counter (tag) ID"
+    },
+    "request_id": {
+     "type": "integer",
+     "exclusiveMinimum": 0,
+     "maximum": 9007199254740991,
+     "description": "Logs API request ID"
+    },
+    "part_number": {
+     "type": "integer",
+     "minimum": 0,
+     "maximum": 9007199254740991,
+     "description": "Part number (0-based)"
+    },
+    "mode": {
+     "default": "preview",
+     "description": "Output mode. 'preview' returns first ~50KB with metadata (safe default). 'full' returns entire content — may be very large for big exports.",
+     "type": "string",
+     "enum": [
+      "preview",
+      "full"
+     ]
+    }
+   },
+   "required": [
+    "counter_id",
+    "request_id",
+    "part_number"
+   ]
+  }
+ },
+ {
+  "name": "yandex_metrica_cancel_logs_request",
+  "inputSchema": {
+   "$schema": "http://json-schema.org/draft-07/schema#",
+   "type": "object",
+   "properties": {
+    "counter_id": {
+     "type": "integer",
+     "exclusiveMinimum": 0,
+     "maximum": 9007199254740991,
+     "description": "Yandex Metrica counter (tag) ID"
+    },
+    "request_id": {
+     "type": "integer",
+     "exclusiveMinimum": 0,
+     "maximum": 9007199254740991,
+     "description": "Logs API request ID"
+    }
+   },
+   "required": [
+    "counter_id",
+    "request_id"
+   ]
+  }
+ },
+ {
+  "name": "yandex_metrica_clean_logs_request",
+  "inputSchema": {
+   "$schema": "http://json-schema.org/draft-07/schema#",
+   "type": "object",
+   "properties": {
+    "counter_id": {
+     "type": "integer",
+     "exclusiveMinimum": 0,
+     "maximum": 9007199254740991,
+     "description": "Yandex Metrica counter (tag) ID"
+    },
+    "request_id": {
+     "type": "integer",
+     "exclusiveMinimum": 0,
+     "maximum": 9007199254740991,
+     "description": "Logs API request ID"
+    }
+   },
+   "required": [
+    "counter_id",
+    "request_id"
+   ]
+  }
+ },
+ {
+  "name": "yandex_metrica_create_counter",
+  "inputSchema": {
+   "$schema": "http://json-schema.org/draft-07/schema#",
+   "type": "object",
+   "properties": {
+    "name": {
+     "type": "string",
+     "description": "Counter name"
+    },
+    "site": {
+     "type": "string",
+     "description": "Site domain (e.g. \"example.com\")"
+    },
+    "mirrors": {
+     "description": "Mirror domains",
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "time_zone_name": {
+     "description": "Timezone (e.g. \"Europe/Moscow\")",
+     "type": "string"
+    },
+    "gdpr_agreement_accepted": {
+     "description": "GDPR agreement accepted (required for EU sites)",
+     "type": "boolean"
+    }
+   },
+   "required": [
+    "name",
+    "site"
+   ]
+  }
+ },
+ {
+  "name": "yandex_metrica_delete_counter",
+  "inputSchema": {
+   "$schema": "http://json-schema.org/draft-07/schema#",
+   "type": "object",
+   "properties": {
+    "counter_id": {
+     "type": "integer",
+     "exclusiveMinimum": 0,
+     "maximum": 9007199254740991,
+     "description": "Yandex Metrica counter (tag) ID"
+    }
+   },
+   "required": [
+    "counter_id"
+   ]
+  }
+ }
+]
