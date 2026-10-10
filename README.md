@@ -315,8 +315,11 @@ Config file `claude_desktop_config.json`: macOS
 }
 ```
 
-Claude Desktop can also install this server in one click. Download the `.mcpb` file
-from https://github.com/stufently/yandex-metrica-mcp/releases/latest and open it.
+Claude Desktop can also install this server in one click from a `.mcpb` file. Releases
+up to v0.2.0 do not include one yet; the bundle is attached starting with the next
+tagged release at https://github.com/stufently/yandex-metrica-mcp/releases/latest.
+Until then, build it locally with `bash scripts/build-mcpb.sh` (needs Docker) and open
+`dist-mcpb/yandex-metrica-mcp-<version>.mcpb`.
 
 ### Cursor
 
@@ -443,7 +446,7 @@ claude mcp add yandex-metrica \
 
 ## Example prompts
 
-- Why did my site lose clicks last week?
+- Why did my site lose visits last week?
 - Which traffic sources sent the most visits last month?
 - What goals are configured on my main counter?
 - Compare this month's visits with the same month last year.

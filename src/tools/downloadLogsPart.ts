@@ -60,7 +60,7 @@ export function registerDownloadLogsPart(server: McpServer, config: Config): voi
         "Use when the user wants the rows of a request whose status is already processed. " +
         "Do not use this to check whether the export is ready; call yandex_metrica_get_logs_request first. " +
         "Preview mode returns about the first 50KB; full mode is only for small parts under 10MB. " +
-        "Part numbers come from log_request_parts and start at 0.",
+        "Part numbers come from the parts list returned by yandex_metrica_get_logs_request and start at 0.",
       annotations: {
         readOnlyHint: true,
         destructiveHint: false,

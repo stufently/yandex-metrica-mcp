@@ -16,6 +16,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
+      - name: Check tag matches package.json version
+        run: |
+          ver="$(jq -r .version package.json)"
+          if [ "v$ver" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::tag $GITHUB_REF_NAME does not match package.json version $ver"
+            exit 1
+          fi
+
       - name: Build Desktop extension
         run: bash scripts/build-mcpb.sh
 

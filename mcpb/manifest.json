@@ -3,7 +3,7 @@
   "name": "yandex-metrica-mcp",
   "display_name": "Yandex Metrica",
   "description": "Query Yandex Metrica reports and raw logs, and manage counters, from an MCP client.",
-  "long_description": "Reads aggregated Yandex Metrica reports and exports raw visits or hits through the Logs API. It can also list, create, and permanently delete counters. The host runs the bundled server with Node.js 24 or newer. A Yandex OAuth token is required: metrika:read for reports and logs, and metrika:write for creating or deleting counters and for Logs API changes.",
+  "long_description": "Reads aggregated Yandex Metrica reports and exports raw visits or hits through the Logs API. It can also list, create, and delete counters. The host runs the bundled server with Node.js 24 or newer. A Yandex OAuth token is required: metrika:read for reports and the Logs API, and metrika:write only for creating or deleting counters.",
   "author": {
     "name": "stufently"
   },
@@ -37,7 +37,7 @@
     "token": {
       "type": "string",
       "title": "Yandex OAuth token",
-      "description": "OAuth token sent as YANDEX_METRICA_TOKEN. metrika:read covers reports and logs; metrika:write is required to create or delete counters and to change Logs API requests.",
+      "description": "OAuth token sent as YANDEX_METRICA_TOKEN. metrika:read covers reports and the Logs API; metrika:write is required only to create or delete counters.",
       "sensitive": true,
       "required": true
     }
@@ -77,7 +77,7 @@
     },
     {
       "name": "yandex_metrica_download_logs_part",
-      "description": "Download one processed part of a Yandex Metrica Logs API export as TSV text. Use when the user wants the rows of a request whose status is already processed. Do not use this to check whether the export is ready; call yandex_metrica_get_logs_request first. Preview mode returns about the first 50KB; full mode is only for small parts under 10MB. Part numbers come from log_request_parts and start at 0."
+      "description": "Download one processed part of a Yandex Metrica Logs API export as TSV text. Use when the user wants the rows of a request whose status is already processed. Do not use this to check whether the export is ready; call yandex_metrica_get_logs_request first. Preview mode returns about the first 50KB; full mode is only for small parts under 10MB. Part numbers come from the parts list returned by yandex_metrica_get_logs_request and start at 0."
     },
     {
       "name": "yandex_metrica_cancel_logs_request",
@@ -93,7 +93,7 @@
     },
     {
       "name": "yandex_metrica_delete_counter",
-      "description": "Permanently delete one Yandex Metrica counter and all data stored on it. Use when the user explicitly asks to remove a counter and accepts that the deletion cannot be undone. Do not use this to inspect a counter; call yandex_metrica_get_counter instead."
+      "description": "Delete one Yandex Metrica counter; it stops collecting data and its statistics are no longer available through the API. Use when the user explicitly asks to remove a counter and has confirmed the deletion. Do not use this to inspect a counter; call yandex_metrica_get_counter instead."
     }
   ]
 }
