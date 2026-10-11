@@ -321,6 +321,13 @@ tagged release at https://github.com/stufently/yandex-metrica-mcp/releases/lates
 Until then, build it locally with `bash scripts/build-mcpb.sh` (needs Docker) and open
 `dist-mcpb/yandex-metrica-mcp-<version>.mcpb`.
 
+Releases include `checksums.txt` with the SHA256 checksum of each `.mcpb` bundle.
+Download it alongside the bundle and verify before installing:
+
+```bash
+sha256sum -c --ignore-missing checksums.txt   # run next to the downloaded .mcpb
+```
+
 ### Cursor
 
 `~/.cursor/mcp.json` for every project, or `.cursor/mcp.json` for one project.

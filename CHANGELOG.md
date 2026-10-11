@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- Releases now attach `checksums.txt` with SHA256 checksums for every `.mcpb` bundle.
+
 ### Fixed
 
 - Logs API: the parts of a processed export are now read from `log_request.parts`,
