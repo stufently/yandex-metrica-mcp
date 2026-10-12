@@ -246,6 +246,21 @@ docker-compose run --rm yandex-metrica-mcp
 
 ---
 
+## Verified clients and platforms
+
+Only what has actually been run is listed as verified. Everything else in
+[Client Configuration](#client-configuration) is a documented config that nobody has
+checked end to end.
+
+| Client / runtime                 | OS                       | How it runs                                                     | Status                         | Evidence                                                      |
+| -------------------------------- | ------------------------ | --------------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------- |
+| Claude Code 2.1                  | Ubuntu 26.04 LTS, x86_64 | Docker image built locally from this repo, stdio                | Verified                       | Daily use on the maintainer's host (counters, reports, goals) |
+| Node.js 24                       | Ubuntu (`ubuntu-latest`) | `npm ci`, lint, typecheck, unit + mock integration tests, build | Verified in CI                 | `ci.yml`                                                      |
+| Docker image                     | Ubuntu (`ubuntu-latest`) | Image build on every pull request and push to `main`            | Built in CI, not started there | `docker.yml`                                                  |
+| Claude Desktop (`.mcpb`)         | macOS, Windows           | Desktop Extension                                               | Not verified                   | Bundle is built in CI, never installed in a real Desktop      |
+| Cursor, Windsurf, Codex CLI, Zed | any                      | Configs below                                                   | Not verified                   | Documented only                                               |
+| macOS, Windows                   | —                        | Any client                                                      | Not verified                   | No CI runner on these systems                                 |
+
 ## Client Configuration
 
 All configs below are copy-paste ready and use the Docker command from
@@ -326,6 +341,14 @@ Download it alongside the bundle and verify before installing:
 
 ```bash
 sha256sum -c --ignore-missing checksums.txt   # run next to the downloaded .mcpb
+```
+
+Releases from the next tag on also carry a GitHub build provenance attestation for each
+`.mcpb`, signed in the release workflow. Check that a bundle was built by this
+repository's workflow and not swapped afterwards (needs the GitHub CLI):
+
+```bash
+gh attestation verify <bundle>.mcpb --repo stufently/yandex-metrica-mcp
 ```
 
 ### Cursor
