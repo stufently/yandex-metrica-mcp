@@ -16,9 +16,9 @@ You will receive a response within 7 days.
 
 ## Scope
 
-This project is a read-only MCP proxy for the Yandex Metrica API. Key security properties:
+This project is an MCP proxy for the Yandex Metrica API. Most tools only read, but some write. Key security properties:
 
 - **Token isolation**: the OAuth token is only ever sent to `api-metrika.yandex.net` (SSRF guard in `src/client/http.ts`)
 - **No persistence**: no database, no file writes, no caching of credentials
-- **No write access**: no tool modifies Yandex Metrica counter data (Logs API lifecycle operations only manage temporary export jobs)
+- **Writes are limited and marked**: `yandex_metrica_create_counter` and `yandex_metrica_delete_counter` change the account (they need a token with the `metrika:write` scope; deleting a counter is permanent), and the Logs API create/cancel/clean tools manage temporary export jobs. These five tools carry `readOnlyHint: false`; the other eight are read-only. A token with only `metrika:read` keeps counters out of reach
 - **Non-root Docker**: container runs as the built-in `node` user
