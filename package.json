@@ -1,7 +1,7 @@
 {
   "name": "@stufently/yandex-metrica-mcp",
   "version": "0.2.2",
-  "description": "Read-only MCP server for Yandex Metrica Reporting and Logs API",
+  "description": "MCP server for Yandex Metrica: Reporting API, Logs API export and counter management",
   "mcpName": "io.github.stufently/yandex-metrica-mcp",
   "type": "module",
   "engines": {

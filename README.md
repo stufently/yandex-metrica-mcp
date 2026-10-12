@@ -1,6 +1,6 @@
 # yandex-metrica-mcp
 
-Read-only MCP server for the Yandex Metrica Reporting API and Logs API, designed for use with [Claude Code](https://claude.ai/claude-code) and [Codex CLI](https://openai.com/codex).
+MCP server for the Yandex Metrica Reporting API, Logs API and counter management, designed for use with [Claude Code](https://claude.ai/claude-code) and [Codex CLI](https://openai.com/codex). Eight of its 13 tools only read; five change your Metrica account — create and delete a counter, and create, cancel and clean a Logs API export. Each tool says which it is in its MCP annotations (`readOnlyHint`, `destructiveHint`).
 
 Runs locally over **stdio**. No web server, no persistent storage, no background daemons.
 
@@ -557,7 +557,7 @@ src/
 
 ## Limitations
 
-- **Mostly read-only** (plus counter create/delete and Logs API lifecycle operations)
+- **Not read-only** — 8 tools read; 5 write: counter create/delete and the Logs API export lifecycle (create, cancel, clean)
 - **No comparison report tool** — use `yandex_metrica_get_report` with `date1_b`/`date2_b` params
 - **No drilldown/pivot/bytime tools** in v1 — planned for v0.2
 - **No caching** — every tool call hits the Yandex API
