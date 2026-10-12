@@ -7,6 +7,8 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Releases now attach `checksums.txt` with SHA256 checksums for every `.mcpb` bundle.
+- The MCPB release workflow attests build provenance for every `.mcpb` (`actions/attest-build-provenance`); check one with `gh attestation verify`.
+- README: a "Verified clients and platforms" table that separates what was run from what is only documented.
 
 ### Fixed
 
