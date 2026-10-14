@@ -1,6 +1,6 @@
 import { YandexApiError } from "../errors/apiError.js";
 import { buildSearchParams } from "../utils/arrays.js";
-import type { Config } from "../config/env.js";
+import { PLACEHOLDER_TOKEN, type Config } from "../config/env.js";
 
 export type Params = Record<string, string | number | boolean | undefined>;
 
@@ -70,6 +70,14 @@ function assertSafeHost(url: URL): void {
 }
 
 export function createHttpClient(config: Config) {
+  if (config.YANDEX_METRICA_TOKEN === PLACEHOLDER_TOKEN) {
+    throw new Error(
+      "YANDEX_METRICA_TOKEN is not set: the server is running with the image's " +
+        "introspection placeholder. Pass a real OAuth token, e.g. " +
+        "`docker run -e YANDEX_METRICA_TOKEN=<token> ...`.",
+    );
+  }
+
   const baseHeaders: Record<string, string> = {
     Authorization: `OAuth ${config.YANDEX_METRICA_TOKEN}`,
     "User-Agent": config.YANDEX_METRICA_USER_AGENT,
