@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- The Docker workflow attests build provenance for every pushed GHCR image
+  (`actions/attest`, stored in the registry); check one with
+  `gh attestation verify oci://ghcr.io/stufently/yandex-metrica-mcp:<tag> --repo stufently/yandex-metrica-mcp`.
+
 ## [0.2.3] - 2026-10-14
 
 ### Added
