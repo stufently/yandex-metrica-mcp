@@ -7,7 +7,7 @@ services:
       YANDEX_METRICA_TOKEN: ${YANDEX_METRICA_TOKEN}
       YANDEX_METRICA_TIMEOUT_MS: ${YANDEX_METRICA_TIMEOUT_MS:-30000}
       LOG_LEVEL: ${LOG_LEVEL:-info}
-      YANDEX_METRICA_USER_AGENT: ${YANDEX_METRICA_USER_AGENT:-yandex-metrica-mcp/0.2.2}
+      YANDEX_METRICA_USER_AGENT: ${YANDEX_METRICA_USER_AGENT:-yandex-metrica-mcp/0.2.3}
     stdin_open: true
     tty: false
     restart: "no"

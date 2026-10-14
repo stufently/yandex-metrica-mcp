@@ -6,7 +6,7 @@ export function createServer(config: Config): McpServer {
   const server = new McpServer(
     {
       name: "yandex-metrica-mcp",
-      version: "0.2.2",
+      version: "0.2.3",
     },
     {
       capabilities: {

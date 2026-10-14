@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.2.3] - 2026-10-14
+
 ### Added
 
 - Releases now attach `checksums.txt` with SHA256 checksums for every `.mcpb` bundle.
