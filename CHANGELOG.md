@@ -9,6 +9,12 @@ All notable changes to this project will be documented in this file.
 - Releases now attach `checksums.txt` with SHA256 checksums for every `.mcpb` bundle.
 - The MCPB release workflow attests build provenance for every `.mcpb` (`actions/attest-build-provenance`); check one with `gh attestation verify`.
 - README: a "Verified clients and platforms" table that separates what was run from what is only documented.
+- The Docker image starts without credentials: it ships a placeholder
+  `YANDEX_METRICA_TOKEN` (`introspection-placeholder-not-a-key`), so registries such as
+  Glama can run `initialize` and `tools/list`. A real `-e YANDEX_METRICA_TOKEN=...`
+  overrides it; a tool call with the placeholder fails with "YANDEX_METRICA_TOKEN is not
+  set" and sends nothing to Yandex. Outside Docker a missing token still stops startup.
+- CI smoke-tests the built image with no token and `--network none`.
 
 ### Fixed
 

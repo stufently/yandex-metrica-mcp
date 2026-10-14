@@ -50,6 +50,33 @@ jobs:
             type=sha,prefix=sha-,format=short
             type=raw,value=latest,enable={{is_default_branch}}
 
+      # Glama and the MCP registry start the image with no token and no network
+      # and list its tools; the image must survive exactly that.
+      - name: Build image for smoke test
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        with:
+          context: .
+          load: true
+          tags: yandex-metrica-mcp:smoke
+          cache-from: type=gha
+
+      - name: Smoke test (no token, no network)
+        run: |
+          name="ymm-smoke-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+          trap 'docker rm -f "$name" >/dev/null 2>&1 || true' EXIT
+          { printf '%s\n' \
+              '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"smoke","version":"0"}}}' \
+              '{"jsonrpc":"2.0","method":"notifications/initialized"}' \
+              '{"jsonrpc":"2.0","id":2,"method":"tools/list"}'
+            sleep 5
+          } | timeout 60 docker run -i --name "$name" --network none -u 1002:1002 \
+              yandex-metrica-mcp:smoke > smoke.out
+          cat smoke.out
+          jq -e 'select(.id == 1) | .result.serverInfo.name == "yandex-metrica-mcp"' smoke.out
+          count="$(jq -r 'select(.id == 2) | .result.tools | length' smoke.out)"
+          echo "tools: $count"
+          [ "$count" = 13 ]
+
       - name: Build and push
         uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
         with:

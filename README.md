@@ -136,15 +136,17 @@ appears in the `docker` command line or `ps` output. The client pulls the image 
 first start; `docker pull ghcr.io/stufently/yandex-metrica-mcp:latest` up front just
 makes that first start faster.
 
-Smoke test without a real token — the server must answer `initialize` and list 13 tools:
+Smoke test without a token or network — the server must answer `initialize` and list
+13 tools. The image ships a placeholder `YANDEX_METRICA_TOKEN` so it starts for
+introspection; tool calls with it return a "YANDEX_METRICA_TOKEN is not set" error
+instead of reaching Yandex:
 
 ```bash
 printf '%s\n' \
   '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"smoke","version":"0"}}}' \
   '{"jsonrpc":"2.0","method":"notifications/initialized"}' \
   '{"jsonrpc":"2.0","id":2,"method":"tools/list"}' \
-  | YANDEX_METRICA_TOKEN=placeholder docker run -i --rm -e YANDEX_METRICA_TOKEN \
-    ghcr.io/stufently/yandex-metrica-mcp:latest
+  | docker run -i --rm --network none ghcr.io/stufently/yandex-metrica-mcp:latest
 ```
 
 Image tags on GHCR: `latest` and `main` (every push to `main`), `sha-<short>`, and

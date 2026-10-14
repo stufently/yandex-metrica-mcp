@@ -1,5 +1,13 @@
 import { z } from "zod";
 
+/**
+ * Value the Docker image ships in YANDEX_METRICA_TOKEN so the server can start and
+ * answer `initialize` / `tools/list` without credentials (registry introspection,
+ * smoke tests). A real `-e YANDEX_METRICA_TOKEN=...` overrides it. Tool calls refuse
+ * to run with it instead of sending it to Yandex.
+ */
+export const PLACEHOLDER_TOKEN = "introspection-placeholder-not-a-key";
+
 const envSchema = z.object({
   YANDEX_METRICA_TOKEN: z.string().min(1, "YANDEX_METRICA_TOKEN is required"),
   YANDEX_METRICA_TIMEOUT_MS: z.coerce.number().int().positive().default(30000),
