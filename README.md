@@ -355,6 +355,10 @@ gh attestation verify <bundle>.mcpb --repo stufently/yandex-metrica-mcp
 
 ### Cursor
 
+[![Add yandex-metrica MCP server to Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en/install-mcp?name=yandex-metrica&config=eyJjb21tYW5kIjoiZG9ja2VyIiwiYXJncyI6WyJydW4iLCItaSIsIi0tcm0iLCItZSIsIllBTkRFWF9NRVRSSUNBX1RPS0VOIiwiZ2hjci5pby9zdHVmZW50bHkveWFuZGV4LW1ldHJpY2EtbWNwOmxhdGVzdCJdLCJlbnYiOnsiWUFOREVYX01FVFJJQ0FfVE9LRU4iOiJ5b3VyX29hdXRoX3Rva2VuX2hlcmUifX0%3D)
+
+After installing, put your token in place of `your_oauth_token_here` in `~/.cursor/mcp.json`. Or add the block below by hand.
+
 `~/.cursor/mcp.json` for every project, or `.cursor/mcp.json` for one project.
 
 ```json
