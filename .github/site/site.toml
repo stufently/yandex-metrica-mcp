@@ -1,0 +1,51 @@
+# Site config for .github/site/build.py. Everything else comes from README.md.
+name = "Yandex Metrica MCP"
+title = "Yandex Metrica MCP — Reporting and Logs API server"
+headline = "MCP server for the Yandex Metrica Reporting API, Logs API and counters"
+description = "13 MCP tools over stdio for Claude Code, Codex and Cursor: Metrica reports, raw Logs API export, counters and goals. Run with Docker, MIT."
+lang = "en"
+keywords = ["yandex metrica mcp", "yandex metrika", "mcp server", "logs api", "reporting api", "claude code", "codex", "analytics"]
+license = "MIT"
+license_url = "https://opensource.org/license/mit"
+category = "DeveloperApplication"
+os = "Linux, macOS, Windows"
+programming_language = "TypeScript"
+eyebrow = "Open source · MIT · Docker · Node.js 24+"
+
+landing_sections = ["Installation", "Supported MCP Tools", "Example prompts"]
+
+pages = []
+docs_dir = ""
+
+features = [
+  "13 MCP tools covering counter management, goals, the Reporting API and the full Logs API lifecycle.",
+  "Reporting API queries with built-in period comparison: pass date1_b/date2_b to get metrics for segments A and B.",
+  "Logs API raw export: evaluate, create, poll, download parts and clean, with a 50KB preview by default.",
+  "Eight tools only read; five change the account, and each tool declares readOnlyHint and destructiveHint.",
+  "Runs locally over stdio from a Docker image on GHCR — no web server, no persistent storage, no daemons.",
+  "Token via environment variable only, never logged; the image runs as a non-root user.",
+]
+
+[[faq]]
+q = "How do I install the Yandex Metrica MCP server?"
+a = "Use Docker: docker run -i --rm -e YANDEX_METRICA_TOKEN ghcr.io/stufently/yandex-metrica-mcp:latest. Nothing to clone and no Node.js needed. The npm package @stufently/yandex-metrica-mcp is not published yet."
+
+[[faq]]
+q = "Which token do I need?"
+a = "A Yandex OAuth token with the metrika:read scope in YANDEX_METRICA_TOKEN. Creating and deleting counters requires the metrika:write scope."
+
+[[faq]]
+q = "Which AI clients does it work with?"
+a = "Any MCP client over stdio. The README has configs for Claude Code, Claude Desktop, Cursor, Windsurf, Codex CLI and Zed; Claude Code on Ubuntu is verified in daily use, the others are documented only."
+
+[[faq]]
+q = "Is the server read-only?"
+a = "No. Eight of the 13 tools only read. Five change your Metrica account: create and delete a counter, and create, cancel and clean a Logs API export."
+
+[[faq]]
+q = "How does the Logs API export work?"
+a = "It is asynchronous: evaluate, create a request, poll yandex_metrica_get_logs_request until status is processed, download each part, then clean. Parts return a 50KB preview unless you set mode to full."
+
+[[faq]]
+q = "Does it cache responses?"
+a = "No. Every tool call hits the Yandex API. Retries with exponential backoff are built in: 3 retries on statuses 429, 500, 502, 503 and 504."
