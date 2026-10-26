@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Build dist-mcpb/yandex-metrica-mcp-<package.json version>.mcpb.
 # Single entry point for local builds and CI. Installs nothing on the host:
-# compile, production install, and `mcpb pack` all run in node:24.21.0-slim
+# compile, production install, and `mcpb pack` all run in node:24.22.1-slim
 # as the current uid. Version is stamped from package.json; it is not stored
 # in mcpb/manifest.json. Tool names and descriptions are copied from a live
 # tools/list of the staged server so the manifest cannot drift from the code.
@@ -9,7 +9,7 @@ set -euo pipefail
 
 cd "$(git rev-parse --show-toplevel)"
 
-IMAGE=node:24.21.0-slim
+IMAGE=node:24.22.1-slim
 MCPB_CLI=@anthropic-ai/mcpb@2.1.2
 MAX_BYTES=$((20 * 1024 * 1024))
 UID_GID="$(id -u):$(id -g)"
